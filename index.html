@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>图片卡片生成器</title>
+    <style>
+      :root {
+        --primary-color: #4a6bdf;
+        --secondary-color: #6c5ce7;
+        --light-color: #f8f9fa;
+        --dark-color: #343a40;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --warning-color: #ffc107;
+        --bg-color1: #d5e7fb;
+        --bg-color2: #9ebefa;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+    
+    /* 两列布局样式 */
+    .main-content {
+      display: flex;
+      flex-direction: row;
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+    
+    .settings-column {
+      flex: 0 0 60%;
+      max-width: 60%;
+    }
+    
+    .preview-column {
+      flex: 0 0 40%;
+      max-width: 40%;
+      position: sticky;
+      top: 20px;
+      align-self: flex-start;
+    }
+      
+      /* 面板样式调整 */
+      .panels {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .panel {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+        margin-bottom: 0;
+      }
+      
+
+
+      .panels {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
+      }
+
+      .panel {
+        width: 100%;
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .panel-title {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        color: var(--primary-color);
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 5px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+
+      input[type="text"],
+      input[type="file"],
+      select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+      }
+
+      input[type="color"] {
+        width: 50px;
+        height: 30px;
+        padding: 2px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .color-picker {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .slider-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .slider-value {
+        min-width: 30px;
+        text-align: center;
+      }
+
+      input[type="range"] {
+        flex: 1;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s;
+      }
+
+      .btn:hover {
+        background-color: var(--secondary-color);
+      }
+
+      .btn-danger {
+        background-color: var(--danger-color);
+      }
+
+      .btn-danger:hover {
+        background-color: #c82333;
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+
+      .preview-container {
+        text-align: center;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+        position: sticky;
+        top: 20px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .preview-title {
+        margin-bottom: 20px;
+        font-weight: 500;
+        font-size: 1.2rem;
+        color: var(--primary-color);
+      }
+
+      #cardPreview {
+        max-width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: none;
+        margin-bottom: 20px;
+      }
+      
+      /* 预览区域的按钮组 */
+      .preview-btn-group {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+        justify-content: center;
+      }
+
+      .loading {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        text-align: center;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      
+      .loading.show {
+        opacity: 1;
+        display: block;
+      }
+
+      .spinner {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        border-radius: 50%;
+        border-top: 4px solid var(--primary-color);
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .toast {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 24px;
+        border-radius: 4px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+      }
+
+      .toast.show {
+        opacity: 1;
+      }
+
+      .toast-success {
+        background-color: #d4edda;
+        color: #155724;
+        border-left: 4px solid #28a745;
+        font-weight: 500;
+      }
+
+      .toast-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+        font-weight: 500;
+      }
+
+      .image-preview {
+        max-width: 100%;
+        max-height: 150px;
+        margin-top: 10px;
+        display: none;
+        border-radius: 4px;
+      }
+
+      .font-option {
+        padding: 5px;
+        font-family: inherit;
+      }
+
+      .font-arial {
+        font-family: Arial, sans-serif;
+      }
+      .font-times {
+        font-family: "Times New Roman", serif;
+      }
+      .font-courier {
+        font-family: "Courier New", monospace;
+      }
+      .font-georgia {
+        font-family: Georgia, serif;
+      }
+      .font-verdana {
+        font-family: Verdana, sans-serif;
+      }
+      .font-palatino {
+        font-family: "Palatino Linotype", "Book Antiqua", serif;
+      }
+
+      @media (max-width: 1024px) {
+        .main-content {
+          flex-direction: column;
+        }
+        
+        .settings-column,
+        .preview-column {
+          flex: 0 0 100%;
+          max-width: 100%;
+        }
+        
+        .preview-column {
+          position: static;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>图片卡片生成器</h1>
+
+      <div class="main-content">
+        <!-- 左侧设置区域 -->
+        <div class="settings-column">
+          <div class="panels">
+            <div class="panel">
+              <h2 class="panel-title">上传图片</h2>
+
+              <div class="form-group">
+                <label for="mainImage">主图片</label>
+                <input type="file" id="mainImage" accept="image/*" />
+                <img id="mainImagePreview" class="image-preview" alt="主图片预览" />
+              </div>
+
+              <div class="form-group">
+                <label for="titleImage">二维码图片 (可选)</label>
+                <input type="file" id="titleImage" accept="image/*" />
+                <img
+                  id="titleImagePreview"
+                  class="image-preview"
+                  alt="二维码图片预览"
+                />
+              </div>
+            </div>
+
+            <div class="panel">
+              <h2 class="panel-title">文字设置</h2>
+
+              <div class="form-group">
+                <label for="cardTitle">卡片标题</label>
+                <input
+                  type="text"
+                  id="cardTitle"
+                  placeholder="输入卡片标题"
+                  maxlength="100"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="fontFamily">字体</label>
+                <select id="fontFamily">
+                  <option value="Arial" class="font-option font-arial">
+                    Arial
+                  </option>
+                  <option value="Times New Roman" class="font-option font-times">
+                    Times New Roman
+                  </option>
+                  <option value="Courier New" class="font-option font-courier">
+                    Courier New
+                  </option>
+                  <option value="Georgia" class="font-option font-georgia">
+                    Georgia
+                  </option>
+                  <option value="Verdana" class="font-option font-verdana">
+                    Verdana
+                  </option>
+                  <option
+                    value="Palatino Linotype"
+                    class="font-option font-palatino"
+                  >
+                    Palatino
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="textColor">文字颜色</label>
+                <div class="color-picker">
+                  <input type="color" id="textColor" value="#000000" />
+                  <span id="textColorValue">#000000</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="textSize">文字大小</label>
+                <div class="slider-container">
+                  <input type="range" id="textSize" min="10" max="50" value="24" />
+                  <span class="slider-value" id="textSizeValue">24</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="textShadow">文字阴影</label>
+                <div class="slider-container">
+                  <input type="range" id="textShadow" min="0" max="10" value="0" />
+                  <span class="slider-value" id="textShadowValue">0</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h2 class="panel-title">样式设置</h2>
+              
+              <div class="form-group">
+                <label for="stylePreset">微信样式预设</label>
+                <select id="stylePreset">
+                  <option value="default">默认样式</option>
+                  <option value="wechat-blue">微信蓝</option>
+                  <option value="wechat-green">微信绿</option>
+                  <option value="elegant">简约风格</option>
+                  <option value="warm">暖色调</option>
+                  <option value="cool">冷色调</option>
+                  <option value="custom">自定义</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="bgColor1">背景颜色 1</label>
+                <div class="color-picker">
+                  <input type="color" id="bgColor1" value="#D5E7FB" />
+                  <span id="bgColor1Value">#D5E7FB</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="bgColor2">背景颜色 2</label>
+                <div class="color-picker">
+                  <input type="color" id="bgColor2" value="#9EBEFA" />
+                  <span id="bgColor2Value">#9EBEFA</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="gradientType">渐变方向</label>
+                <select id="gradientType">
+                  <option value="to right">水平</option>
+                  <option value="to bottom">垂直</option>
+                  <option value="to right bottom">对角线</option>
+                  <option value="circle">径向</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="cardPadding">内边距</label>
+                <div class="slider-container">
+                  <input
+                    type="range"
+                    id="cardPadding"
+                    min="0"
+                    max="50"
+                    value="0"
+                  />
+                  <span class="slider-value" id="cardPaddingValue">0</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="cardRadius">圆角半径</label>
+                <div class="slider-container">
+                  <input type="range" id="cardRadius" min="0" max="50" value="10" />
+                  <span class="slider-value" id="cardRadiusValue">10</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="cardShadow">阴影强度</label>
+                <div class="slider-container">
+                  <input type="range" id="cardShadow" min="0" max="20" value="5" />
+                  <span class="slider-value" id="cardShadowValue">5</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 重置按钮放在左侧底部 -->
+            <div class="btn-group">
+              <button id="resetBtn" class="btn btn-danger">重置所有设置</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 右侧预览区域 -->
+        <div class="preview-column">
+          <div class="preview-container">
+            <h3 class="preview-title">卡片预览</h3>
+            <img id="cardPreview" alt="卡片预览" />
+            
+            <!-- 生成和下载按钮放在右侧预览区域 -->
+            <div class="preview-btn-group">
+              <button id="generateBtn" class="btn">生成卡片</button>
+              <button id="downloadBtn" class="btn" disabled>下载卡片</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>正在生成卡片...</p>
+      </div>
+
+      <div id="toast" class="toast"></div>
+
+      <canvas id="canvas" style="display: none"></canvas>
+    </div>
+
+    <script>
+      // DOM元素
+      const mainImageInput = document.getElementById("mainImage");
+      const titleImageInput = document.getElementById("titleImage");
+      const mainImagePreview = document.getElementById("mainImagePreview");
+      const titleImagePreview = document.getElementById("titleImagePreview");
+      const cardTitleInput = document.getElementById("cardTitle");
+      const fontFamilySelect = document.getElementById("fontFamily");
+      const textColorInput = document.getElementById("textColor");
+      const textColorValue = document.getElementById("textColorValue");
+      const textSizeInput = document.getElementById("textSize");
+      const textSizeValue = document.getElementById("textSizeValue");
+      const textShadowInput = document.getElementById("textShadow");
+      const textShadowValue = document.getElementById("textShadowValue");
+      const stylePresetSelect = document.getElementById("stylePreset");
+      const bgColor1Input = document.getElementById("bgColor1");
+      const bgColor1Value = document.getElementById("bgColor1Value");
+      const bgColor2Input = document.getElementById("bgColor2");
+      const bgColor2Value = document.getElementById("bgColor2Value");
+      const gradientTypeSelect = document.getElementById("gradientType");
+      const cardPaddingInput = document.getElementById("cardPadding");
+      const cardPaddingValue = document.getElementById("cardPaddingValue");
+      const cardRadiusInput = document.getElementById("cardRadius");
+      const cardRadiusValue = document.getElementById("cardRadiusValue");
+      const cardShadowInput = document.getElementById("cardShadow");
+      const cardShadowValue = document.getElementById("cardShadowValue");
+      const generateBtn = document.getElementById("generateBtn");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const loadingDiv = document.querySelector(".loading");
+      const toastDiv = document.getElementById("toast");
+      const cardPreview = document.getElementById("cardPreview");
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+
+      // 图片加载
+      mainImageInput.addEventListener("change", function (e) {
+        loadImage(e.target.files[0], mainImagePreview);
+      });
+
+      titleImageInput.addEventListener("change", function (e) {
+        loadImage(e.target.files[0], titleImagePreview);
+      });
+
+      // 颜色选择器值显示
+      textColorInput.addEventListener("input", function () {
+        textColorValue.textContent = textColorInput.value;
+      });
+
+      bgColor1Input.addEventListener("input", function () {
+        bgColor1Value.textContent = bgColor1Input.value;
+      });
+
+      bgColor2Input.addEventListener("input", function () {
+        bgColor2Value.textContent = bgColor2Input.value;
+      });
+
+      // 滑块值显示
+      textSizeInput.addEventListener("input", function () {
+        textSizeValue.textContent = textSizeInput.value;
+      });
+
+      textShadowInput.addEventListener("input", function () {
+        textShadowValue.textContent = textShadowInput.value;
+      });
+
+      cardPaddingInput.addEventListener("input", function () {
+        cardPaddingValue.textContent = cardPaddingInput.value;
+      });
+
+      cardRadiusInput.addEventListener("input", function () {
+        cardRadiusValue.textContent = cardRadiusInput.value;
+      });
+
+      cardShadowInput.addEventListener("input", function () {
+        cardShadowValue.textContent = cardShadowInput.value;
+      });
+
+      // 生成卡片
+      generateBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        generateCard();
+      });
+
+      // 下载卡片
+      downloadBtn.addEventListener("click", function () {
+        if (cardPreview.src) {
+          // 获取当前日期时间作为默认文件名的一部分
+          const now = new Date();
+          const dateStr = now.getFullYear() + 
+                        ("0" + (now.getMonth() + 1)).slice(-2) + 
+                        ("0" + now.getDate()).slice(-2) + "_" +
+                        ("0" + now.getHours()).slice(-2) + 
+                        ("0" + now.getMinutes()).slice(-2);
+          
+          // 使用标题作为文件名的一部分（如果有）
+          let fileName = "";
+          if (cardTitleInput.value.trim()) {
+            // 限制文件名长度并移除不合法字符
+            fileName = cardTitleInput.value.trim()
+              .replace(/[\\/:*?"<>|]/g, "_")
+              .substring(0, 30);
+            fileName = fileName + "_" + dateStr + ".png";
+          } else {
+            fileName = "微信图片卡片_" + dateStr + ".png";
+          }
+          
+          // 创建下载链接
+          const link = document.createElement("a");
+          link.download = fileName;
+          link.href = cardPreview.src;
+          link.click();
+          
+          showMessage("图片已下载，可直接插入微信公众号文章", "success");
+        }
+      });
+
+      // 重置表单
+      resetBtn.addEventListener("click", resetForm);
+
+      // 加载图片函数
+      function loadImage(file, previewElement) {
+        if (!file) return;
+
+        // 验证图片类型
+        const validTypes = [
+          "image/jpeg",
+          "image/png",
+          "image/gif",
+          "image/webp",
+        ];
+        if (!validTypes.includes(file.type)) {
+          showMessage("请上传有效的图片文件 (JPEG, PNG, GIF, WEBP)", "error");
+          return;
+        }
+
+        // 验证图片大小 (最大5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          showMessage("图片大小不能超过5MB", "error");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          previewElement.src = e.target.result;
+          previewElement.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // 生成卡片函数
+      function generateCard() {
+        // 验证主图片
+        if (!mainImageInput.files || mainImageInput.files.length === 0) {
+          showMessage("请上传主图片", "error");
+          return;
+        }
+
+        // 显示加载指示器
+        loadingDiv.classList.add("show");
+        cardPreview.style.display = "none";
+
+        // 异步加载所有图片
+        Promise.all([
+          loadImageAsync(mainImageInput.files[0]),
+          titleImageInput.files && titleImageInput.files.length > 0
+            ? loadImageAsync(titleImageInput.files[0])
+            : Promise.resolve(null),
+        ])
+          .then(([mainImage, qrCodeImage]) => {
+            // 设置画布尺寸 - 微信公众号图片推荐宽度为900px，高宽比约为3:2
+            const cardWidth = 900;
+            const cardHeight = 600;
+            canvas.width = cardWidth;
+            canvas.height = cardHeight;
+
+            // 绘制背景
+            drawBackground();
+
+            // 绘制卡片内容
+            const padding = parseInt(cardPaddingInput.value);
+            const radius = parseInt(cardRadiusInput.value);
+            const shadow = parseInt(cardShadowInput.value);
+
+            // 绘制卡片区域
+            drawCardArea(padding, radius, shadow);
+
+            const contentWidth = cardWidth - 2 * padding;
+            const contentHeight = cardHeight - 2 * padding;
+
+            // 计算可用空间和间距
+            const totalWidth = contentWidth;
+            const spacing = totalWidth * 0.1; // 两侧间距各10%
+
+            // 优化布局 - 微信公众号友好的图片布局
+            // 计算主图片尺寸和位置
+            const mainImageRatio = mainImage.width / mainImage.height;
+            let mainImageHeight, mainImageWidth, mainImageX, mainImageY;
+            
+            // 如果有二维码，使用左右布局，否则居中显示主图片
+            if (qrCodeImage) {
+              // 左右布局 - 主图片在左，二维码在右
+              mainImageHeight = contentHeight * 0.85; // 增加图片高度比例
+              mainImageWidth = mainImageHeight * mainImageRatio;
+              
+              // 如果图片太宽，按宽度调整
+              if (mainImageWidth > contentWidth * 0.65) {
+                mainImageWidth = contentWidth * 0.65;
+                mainImageHeight = mainImageWidth / mainImageRatio;
+              }
+              
+              mainImageX = padding + spacing;
+              mainImageY = padding + (contentHeight - mainImageHeight) / 2;
+              
+              // 绘制主图片
+              ctx.drawImage(
+                mainImage,
+                mainImageX,
+                mainImageY,
+                mainImageWidth,
+                mainImageHeight
+              );
+              
+              // 绘制二维码图片（右侧）
+              const qrCodeSize = Math.min(
+                contentWidth * 0.25, // 稍微减小二维码尺寸
+                Math.min(qrCodeImage.width, qrCodeImage.height)
+              );
+              const qrCodeX = padding + totalWidth - spacing - qrCodeSize - 10; // 增加一点间距
+              const qrCodeY = padding + (contentHeight - qrCodeSize) / 2;
+              
+              // 为二维码添加白色背景和边框
+              ctx.fillStyle = "white";
+              ctx.fillRect(qrCodeX - 5, qrCodeY - 5, qrCodeSize + 10, qrCodeSize + 10);
+              
+              // 绘制二维码
+              ctx.drawImage(
+                qrCodeImage,
+                qrCodeX,
+                qrCodeY,
+                qrCodeSize,
+                qrCodeSize
+              );
+            } else {
+              // 居中布局 - 只有主图片
+              mainImageHeight = contentHeight * 0.9;
+              mainImageWidth = mainImageHeight * mainImageRatio;
+              
+              // 如果图片太宽，按宽度调整
+              if (mainImageWidth > contentWidth * 0.9) {
+                mainImageWidth = contentWidth * 0.9;
+                mainImageHeight = mainImageWidth / mainImageRatio;
+              }
+              
+              // 居中显示
+              mainImageX = padding + (contentWidth - mainImageWidth) / 2;
+              mainImageY = padding + (contentHeight - mainImageHeight) / 2;
+              
+              // 绘制主图片
+              ctx.drawImage(
+                mainImage,
+                mainImageX,
+                mainImageY,
+                mainImageWidth,
+                mainImageHeight
+              );
+            }
+
+            // 绘制标题文字 - 优化微信公众号显示效果
+            if (cardTitleInput.value.trim()) {
+              const text = cardTitleInput.value.trim();
+              const fontSize = parseInt(textSizeInput.value);
+              const fontFamily = fontFamilySelect.value;
+              const textColor = textColorInput.value;
+              const textShadow = parseInt(textShadowInput.value);
+
+              ctx.font = `bold ${fontSize}px ${fontFamily}`; // 添加粗体使文字更醒目
+              ctx.textAlign = "center";
+              ctx.textBaseline = "top";
+
+              // 绘制文字阴影
+              if (textShadow > 0) {
+                ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+                ctx.shadowBlur = textShadow;
+                ctx.shadowOffsetX = textShadow / 2;
+                ctx.shadowOffsetY = textShadow / 2;
+              }
+
+              // 优化的文字换行 - 支持中文和英文
+              const lines = wrapTextImproved(ctx, text, contentWidth - 60, fontSize);
+              const lineHeight = fontSize * 1.3; // 增加行高，提高可读性
+              const totalTextHeight = lines.length * lineHeight;
+
+              // 计算文字位置 - 根据是否有二维码调整位置
+              const textX = cardWidth / 2;
+              let textY;
+              
+              // 如果文字行数较多，放在顶部，否则居中显示
+              if (lines.length > 2) {
+                textY = padding + 15; // 顶部位置
+              } else {
+                // 如果只有一两行文字，可以考虑放在底部或顶部
+                textY = padding + 15; // 顶部位置
+              }
+
+              // 为文字添加半透明背景，提高可读性
+              const textBgPadding = 10;
+              const textBgWidth = contentWidth - 40;
+              const textBgHeight = totalTextHeight + textBgPadding * 2;
+              const textBgX = (cardWidth - textBgWidth) / 2;
+              const textBgY = textY - textBgPadding;
+              
+              // 绘制文字背景
+              ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+              roundRect(ctx, textBgX, textBgY, textBgWidth, textBgHeight, 5, true, false);
+
+              // 绘制每行文字
+              ctx.fillStyle = textColor;
+              for (let i = 0; i < lines.length; i++) {
+                ctx.fillText(lines[i], textX, textY + i * lineHeight);
+              }
+
+              // 重置阴影
+              ctx.shadowColor = "transparent";
+              ctx.shadowBlur = 0;
+              ctx.shadowOffsetX = 0;
+              ctx.shadowOffsetY = 0;
+            }
+
+            // 将画布内容转换为图片并显示
+            cardPreview.src = canvas.toDataURL("image/png");
+            cardPreview.style.display = "block";
+            downloadBtn.disabled = false;
+
+            showMessage("卡片生成成功!", "success");
+          })
+          .catch((error) => {
+            console.error("生成卡片出错:", error);
+            showMessage("生成卡片时出错: " + error.message, "error");
+          })
+          .finally(() => {
+            loadingDiv.classList.remove("show");
+          });
+      }
+
+      // 异步加载图片
+      function loadImageAsync(file) {
+        return new Promise((resolve, reject) => {
+          if (!file) {
+            resolve(null);
+            return;
+          }
+
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error("图片加载失败"));
+          img.src = URL.createObjectURL(file);
+        });
+      }
+
+      // 绘制背景
+      function drawBackground() {
+        const bgColor1 = bgColor1Input.value;
+        const bgColor2 = bgColor2Input.value;
+        const gradientType = gradientTypeSelect.value;
+
+        let gradient;
+
+        if (gradientType === "circle") {
+          // 径向渐变
+          gradient = ctx.createRadialGradient(
+            canvas.width / 2,
+            canvas.height / 2,
+            0,
+            canvas.width / 2,
+            canvas.height / 2,
+            Math.max(canvas.width, canvas.height) / 2
+          );
+        } else {
+          // 线性渐变
+          let x0, y0, x1, y1;
+
+          switch (gradientType) {
+            case "to right":
+              x0 = 0;
+              y0 = 0;
+              x1 = canvas.width;
+              y1 = 0;
+              break;
+            case "to bottom":
+              x0 = 0;
+              y0 = 0;
+              x1 = 0;
+              y1 = canvas.height;
+              break;
+            case "to right bottom":
+              x0 = 0;
+              y0 = 0;
+              x1 = canvas.width;
+              y1 = canvas.height;
+              break;
+          }
+
+          gradient = ctx.createLinearGradient(x0, y0, x1, y1);
+        }
+
+        gradient.addColorStop(0, bgColor1);
+        gradient.addColorStop(1, bgColor2);
+
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // 绘制卡片区域
+      function drawCardArea(padding, radius, shadow) {
+        const x = padding;
+        const y = padding;
+        const width = canvas.width - 2 * padding;
+        const height = canvas.height - 2 * padding;
+
+        // 绘制阴影
+        if (shadow > 0) {
+          ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
+          ctx.shadowBlur = shadow;
+          ctx.shadowOffsetX = shadow / 2;
+          ctx.shadowOffsetY = shadow / 2;
+        }
+
+        // 绘制圆角矩形
+        roundRect(ctx, x, y, width, height, radius, true, false);
+
+        // 不填充白色背景，保留渐变背景
+        // ctx.fillStyle = "white";
+        // ctx.fill();
+
+        // 重置阴影
+        ctx.shadowColor = "transparent";
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+      }
+
+      // 绘制圆角矩形
+      function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(
+          x + width,
+          y + height,
+          x + width - radius,
+          y + height
+        );
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+        if (fill) {
+          ctx.fill();
+        }
+        if (stroke) {
+          ctx.stroke();
+        }
+      }
+
+      // 优化的文字换行函数 - 支持中文和英文
+      function wrapTextImproved(context, text, maxWidth, fontSize) {
+        // 检测是否包含中文字符
+        const containsChinese = /[\u4e00-\u9fa5]/.test(text);
+        
+        if (containsChinese) {
+          // 中文文本处理 - 按字符分割
+          return wrapChineseText(context, text, maxWidth);
+        } else {
+          // 英文文本处理 - 按单词分割
+          return wrapEnglishText(context, text, maxWidth);
+        }
+      }
+      
+      // 中文文本换行
+      function wrapChineseText(context, text, maxWidth) {
+        const lines = [];
+        let currentLine = "";
+        
+        // 逐字符检查
+        for (let i = 0; i < text.length; i++) {
+          const char = text[i];
+          const testLine = currentLine + char;
+          const metrics = context.measureText(testLine);
+          const testWidth = metrics.width;
+          
+          if (testWidth > maxWidth && currentLine !== "") {
+            lines.push(currentLine);
+            currentLine = char;
+          } else {
+            currentLine = testLine;
+          }
+        }
+        
+        // 添加最后一行
+        if (currentLine !== "") {
+          lines.push(currentLine);
+        }
+        
+        return lines;
+      }
+      
+      // 英文文本换行
+      function wrapEnglishText(context, text, maxWidth) {
+        const words = text.split(" ");
+        const lines = [];
+        let currentLine = words[0];
+
+        for (let i = 1; i < words.length; i++) {
+          const word = words[i];
+          const width = context.measureText(currentLine + " " + word).width;
+
+          if (width < maxWidth) {
+            currentLine += " " + word;
+          } else {
+            lines.push(currentLine);
+            currentLine = word;
+          }
+        }
+
+        lines.push(currentLine);
+        return lines;
+      }
+
+      // 显示消息
+      function showMessage(message, type) {
+        // 成功消息使用更短的显示时间，错误消息保持较长时间
+        const displayTime = type === "success" ? 2000 : 3000;
+        
+        // 更新toast内容和样式
+        const toastDiv = document.getElementById("toast");
+        toastDiv.textContent = message;
+        toastDiv.className = "toast toast-" + type;
+        
+        // 显示toast
+        setTimeout(() => {
+          toastDiv.classList.add("show");
+          
+          // 设置自动隐藏
+          setTimeout(() => {
+            toastDiv.classList.remove("show");
+          }, displayTime);
+        }, 10);
+      }
+
+      // 微信样式预设
+      stylePresetSelect.addEventListener("change", function() {
+        const preset = stylePresetSelect.value;
+        
+        switch(preset) {
+          case "wechat-blue":
+            // 微信蓝色调
+            bgColor1Input.value = "#1E90FF";
+            bgColor1Value.textContent = "#1E90FF";
+            bgColor2Input.value = "#87CEFA";
+            bgColor2Value.textContent = "#87CEFA";
+            gradientTypeSelect.value = "to right bottom";
+            cardRadiusInput.value = "15";
+            cardRadiusValue.textContent = "15";
+            cardShadowInput.value = "8";
+            cardShadowValue.textContent = "8";
+            break;
+          case "wechat-green":
+            // 微信绿色调
+            bgColor1Input.value = "#07C160";
+            bgColor1Value.textContent = "#07C160";
+            bgColor2Input.value = "#A0E6C8";
+            bgColor2Value.textContent = "#A0E6C8";
+            gradientTypeSelect.value = "to bottom";
+            cardRadiusInput.value = "12";
+            cardRadiusValue.textContent = "12";
+            cardShadowInput.value = "6";
+            cardShadowValue.textContent = "6";
+            break;
+          case "elegant":
+            // 简约风格
+            bgColor1Input.value = "#F5F5F5";
+            bgColor1Value.textContent = "#F5F5F5";
+            bgColor2Input.value = "#E0E0E0";
+            bgColor2Value.textContent = "#E0E0E0";
+            gradientTypeSelect.value = "to right";
+            cardRadiusInput.value = "8";
+            cardRadiusValue.textContent = "8";
+            cardShadowInput.value = "3";
+            cardShadowValue.textContent = "3";
+            break;
+          case "warm":
+            // 暖色调
+            bgColor1Input.value = "#FFD700";
+            bgColor1Value.textContent = "#FFD700";
+            bgColor2Input.value = "#FFA07A";
+            bgColor2Value.textContent = "#FFA07A";
+            gradientTypeSelect.value = "to right bottom";
+            cardRadiusInput.value = "20";
+            cardRadiusValue.textContent = "20";
+            cardShadowInput.value = "10";
+            cardShadowValue.textContent = "10";
+            break;
+          case "cool":
+            // 冷色调
+            bgColor1Input.value = "#4B0082";
+            bgColor1Value.textContent = "#4B0082";
+            bgColor2Input.value = "#9370DB";
+            bgColor2Value.textContent = "#9370DB";
+            gradientTypeSelect.value = "to bottom";
+            cardRadiusInput.value = "15";
+            cardRadiusValue.textContent = "15";
+            cardShadowInput.value = "7";
+            cardShadowValue.textContent = "7";
+            break;
+          case "custom":
+            // 自定义样式，不做任何改变
+            break;
+          case "default":
+          default:
+            // 默认样式
+            bgColor1Input.value = "#D5E7FB";
+            bgColor1Value.textContent = "#D5E7FB";
+            bgColor2Input.value = "#9EBEFA";
+            bgColor2Value.textContent = "#9EBEFA";
+            gradientTypeSelect.value = "to right";
+            cardRadiusInput.value = "10";
+            cardRadiusValue.textContent = "10";
+            cardShadowInput.value = "5";
+            cardShadowValue.textContent = "5";
+            break;
+        }
+      });
+      
+      // 重置表单
+      function resetForm() {
+        // 重置输入字段
+        mainImageInput.value = "";
+        titleImageInput.value = "";
+        mainImagePreview.src = "";
+        mainImagePreview.style.display = "none";
+        titleImagePreview.src = "";
+        titleImagePreview.style.display = "none";
+        cardTitleInput.value = "";
+        fontFamilySelect.value = "Arial";
+        textColorInput.value = "#000000";
+        textColorValue.textContent = "#000000";
+        textSizeInput.value = "24";
+        textSizeValue.textContent = "24";
+        textShadowInput.value = "0";
+        textShadowValue.textContent = "0";
+        stylePresetSelect.value = "default";
+        bgColor1Input.value = "#D5E7FB";
+        bgColor1Value.textContent = "#D5E7FB";
+        bgColor2Input.value = "#9EBEFA";
+        bgColor2Value.textContent = "#9EBEFA";
+        gradientTypeSelect.value = "to right";
+        cardPaddingInput.value = "0";
+        cardPaddingValue.textContent = "0";
+        cardRadiusInput.value = "10";
+        cardRadiusValue.textContent = "10";
+        cardShadowInput.value = "5";
+        cardShadowValue.textContent = "5";
+
+        // 重置预览
+        cardPreview.src = "";
+        cardPreview.style.display = "none";
+        downloadBtn.disabled = true;
+
+        // 隐藏消息
+        toastDiv.classList.remove("show");
+      }
+    </script>
+  </body>
+</html>
