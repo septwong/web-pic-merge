@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>图片卡片生成器</title>
     <!-- 使用SVG作为现代浏览器的favicon -->
-    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <!-- 为了兼容旧浏览器，可以使用以下工具将SVG转换为ICO或PNG: https://convertio.co/svg-ico/ -->
-    <link rel="shortcut icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="shortcut icon" href="favicon.svg" type="image/svg+xml" />
     <!-- 如需更好的兼容性，建议添加以下几种尺寸的图标：
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
@@ -34,50 +34,55 @@
       }
 
       body {
-      font-family: "Helvetica Neue", Arial, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      background-color: #f5f5f5;
-      margin: 0;
-      padding: 20px;
-    }
+        font-family: "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 20px;
+      }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background-color: #fff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-      color: #333;
-    }
-    
-    /* 两列布局样式 */
-    .main-content {
-      display: flex;
-      flex-direction: row;
-      gap: 30px;
-      margin-bottom: 20px;
-    }
-    
-    .settings-column {
-      flex: 0 0 60%;
-      max-width: 60%;
-    }
-    
-    .preview-column {
-      flex: 0 0 40%;
-      max-width: 40%;
-      position: sticky;
-      top: 20px;
-      align-self: flex-start;
-    }
-      
+      h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #333;
+      }
+      .title {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* 两列布局样式 */
+      .main-content {
+        display: flex;
+        flex-direction: row;
+        gap: 30px;
+        margin-bottom: 20px;
+      }
+
+      .settings-column {
+        flex: 0 0 60%;
+        max-width: 60%;
+      }
+
+      .preview-column {
+        flex: 0 0 40%;
+        max-width: 40%;
+        position: sticky;
+        top: 20px;
+        align-self: flex-start;
+      }
+
       /* 面板样式调整 */
       .panels {
         display: flex;
@@ -92,8 +97,6 @@
         padding: 20px;
         margin-bottom: 0;
       }
-      
-
 
       .panels {
         display: flex;
@@ -227,7 +230,7 @@
         display: none;
         margin-bottom: 20px;
       }
-      
+
       /* 预览区域的按钮组 */
       .preview-btn-group {
         display: flex;
@@ -235,18 +238,18 @@
         margin-top: 20px;
         justify-content: center;
       }
-      
+
       /* 水印样式 */
       .watermark-container {
         margin-top: 15px;
       }
-      
+
       .watermark-group {
         display: flex;
         flex-direction: column;
         gap: 10px;
       }
-      
+
       .watermark-toggle {
         display: flex;
         align-items: center;
@@ -268,7 +271,7 @@
         opacity: 0;
         transition: opacity 0.3s ease;
       }
-      
+
       .loading.show {
         opacity: 1;
         display: block;
@@ -361,13 +364,13 @@
         .main-content {
           flex-direction: column;
         }
-        
+
         .settings-column,
         .preview-column {
           flex: 0 0 100%;
           max-width: 100%;
         }
-        
+
         .preview-column {
           position: static;
         }
@@ -376,7 +379,13 @@
   </head>
   <body>
     <div class="container">
-      <h1><img src="logo.svg" alt="网站Logo" style="height: 30px; vertical-align: middle; margin-right: 10px;">图片卡片生成器</h1>
+      <h1 class="title">
+        <img
+          src="logo.svg"
+          alt="网站Logo"
+          style="height: 36px; vertical-align: middle; margin-right: 10px"
+        />图片卡片生成器
+      </h1>
 
       <div class="main-content">
         <!-- 左侧设置区域 -->
@@ -388,7 +397,11 @@
               <div class="form-group">
                 <label for="mainImage">主图片</label>
                 <input type="file" id="mainImage" accept="image/*" />
-                <img id="mainImagePreview" class="image-preview" alt="主图片预览" />
+                <img
+                  id="mainImagePreview"
+                  class="image-preview"
+                  alt="主图片预览"
+                />
               </div>
 
               <div class="form-group">
@@ -403,77 +416,13 @@
             </div>
 
             <div class="panel">
-              <h2 class="panel-title">文字设置</h2>
-
-              <div class="form-group">
-                <label for="cardTitle">卡片标题</label>
-                <input
-                  type="text"
-                  id="cardTitle"
-                  placeholder="输入卡片标题"
-                  maxlength="100"
-                />
-              </div>
-
-              <div class="form-group">
-                <label for="fontFamily">字体</label>
-                <select id="fontFamily">
-                  <option value="Arial" class="font-option font-arial">
-                    Arial
-                  </option>
-                  <option value="Times New Roman" class="font-option font-times">
-                    Times New Roman
-                  </option>
-                  <option value="Courier New" class="font-option font-courier">
-                    Courier New
-                  </option>
-                  <option value="Georgia" class="font-option font-georgia">
-                    Georgia
-                  </option>
-                  <option value="Verdana" class="font-option font-verdana">
-                    Verdana
-                  </option>
-                  <option
-                    value="Palatino Linotype"
-                    class="font-option font-palatino"
-                  >
-                    Palatino
-                  </option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="textColor">文字颜色</label>
-                <div class="color-picker">
-                  <input type="color" id="textColor" value="#000000" />
-                  <span id="textColorValue">#000000</span>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="textSize">文字大小</label>
-                <div class="slider-container">
-                  <input type="range" id="textSize" min="10" max="50" value="24" />
-                  <span class="slider-value" id="textSizeValue">24</span>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="textShadow">文字阴影</label>
-                <div class="slider-container">
-                  <input type="range" id="textShadow" min="0" max="10" value="0" />
-                  <span class="slider-value" id="textShadowValue">0</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="panel">
               <h2 class="panel-title">样式设置</h2>
-              
+
               <div class="form-group">
                 <label for="stylePreset">微信样式预设</label>
                 <select id="stylePreset">
                   <option value="default">默认样式</option>
+                  <option value="auto">自动(提取图片最鲜艳颜色)</option>
                   <option value="wechat-blue">微信蓝</option>
                   <option value="wechat-green">微信绿</option>
                   <option value="elegant">简约风格</option>
@@ -526,7 +475,13 @@
               <div class="form-group">
                 <label for="cardRadius">圆角半径</label>
                 <div class="slider-container">
-                  <input type="range" id="cardRadius" min="0" max="50" value="0" />
+                  <input
+                    type="range"
+                    id="cardRadius"
+                    min="0"
+                    max="50"
+                    value="0"
+                  />
                   <span class="slider-value" id="cardRadiusValue">0</span>
                 </div>
               </div>
@@ -534,26 +489,117 @@
               <div class="form-group">
                 <label for="cardShadow">阴影强度</label>
                 <div class="slider-container">
-                  <input type="range" id="cardShadow" min="0" max="20" value="5" />
+                  <input
+                    type="range"
+                    id="cardShadow"
+                    min="0"
+                    max="20"
+                    value="5"
+                  />
                   <span class="slider-value" id="cardShadowValue">5</span>
                 </div>
               </div>
             </div>
-            
+
+            <div class="panel">
+              <h2 class="panel-title">文字设置</h2>
+
+              <div class="form-group">
+                <label for="cardTitle">卡片标题</label>
+                <input
+                  type="text"
+                  id="cardTitle"
+                  placeholder="输入卡片标题"
+                  maxlength="100"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="fontFamily">字体</label>
+                <select id="fontFamily">
+                  <option value="Arial" class="font-option font-arial">
+                    Arial
+                  </option>
+                  <option
+                    value="Times New Roman"
+                    class="font-option font-times"
+                  >
+                    Times New Roman
+                  </option>
+                  <option value="Courier New" class="font-option font-courier">
+                    Courier New
+                  </option>
+                  <option value="Georgia" class="font-option font-georgia">
+                    Georgia
+                  </option>
+                  <option value="Verdana" class="font-option font-verdana">
+                    Verdana
+                  </option>
+                  <option
+                    value="Palatino Linotype"
+                    class="font-option font-palatino"
+                  >
+                    Palatino
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="textColor">文字颜色</label>
+                <div class="color-picker">
+                  <input type="color" id="textColor" value="#000000" />
+                  <span id="textColorValue">#000000</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="textSize">文字大小</label>
+                <div class="slider-container">
+                  <input
+                    type="range"
+                    id="textSize"
+                    min="10"
+                    max="50"
+                    value="24"
+                  />
+                  <span class="slider-value" id="textSizeValue">24</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="textShadow">文字阴影</label>
+                <div class="slider-container">
+                  <input
+                    type="range"
+                    id="textShadow"
+                    min="0"
+                    max="10"
+                    value="0"
+                  />
+                  <span class="slider-value" id="textShadowValue">0</span>
+                </div>
+              </div>
+            </div>
+
             <div class="panel">
               <h2 class="panel-title">水印设置</h2>
-              
+
               <div class="form-group watermark-toggle">
                 <input type="checkbox" id="enableWatermark" checked />
                 <label for="enableWatermark">启用水印</label>
               </div>
-              
+
               <div class="watermark-group">
                 <div class="form-group">
                   <label for="watermarkText">水印文字</label>
-                  <input type="text" id="watermarkText" placeholder="输入水印文字" value="公众号:科技研习室" />
+                  <input
+                    type="text"
+                    id="watermarkText"
+                    placeholder="输入水印文字"
+                    value="公众号:科技研习室"
+                  />
                 </div>
-                
+
                 <div class="form-group">
                   <label for="watermarkColor">水印颜色</label>
                   <div class="color-picker">
@@ -561,23 +607,37 @@
                     <span id="watermarkColorValue">#000000</span>
                   </div>
                 </div>
-                
+
                 <div class="form-group">
                   <label for="watermarkOpacity">水印透明度</label>
                   <div class="slider-container">
-                    <input type="range" id="watermarkOpacity" min="0" max="100" value="30" />
-                    <span class="slider-value" id="watermarkOpacityValue">30</span>
+                    <input
+                      type="range"
+                      id="watermarkOpacity"
+                      min="0"
+                      max="100"
+                      value="30"
+                    />
+                    <span class="slider-value" id="watermarkOpacityValue"
+                      >30</span
+                    >
                   </div>
                 </div>
-                
+
                 <div class="form-group">
                   <label for="watermarkSize">水印大小</label>
                   <div class="slider-container">
-                    <input type="range" id="watermarkSize" min="10" max="30" value="16" />
+                    <input
+                      type="range"
+                      id="watermarkSize"
+                      min="10"
+                      max="30"
+                      value="16"
+                    />
                     <span class="slider-value" id="watermarkSizeValue">16</span>
                   </div>
                 </div>
-                
+
                 <div class="form-group">
                   <label for="watermarkPosition">水印位置</label>
                   <select id="watermarkPosition">
@@ -590,17 +650,17 @@
                 </div>
               </div>
             </div>
-            
+
             <!-- 移除左侧底部的重置按钮 -->
           </div>
         </div>
-        
+
         <!-- 右侧预览区域 -->
         <div class="preview-column">
           <div class="preview-container">
             <h3 class="preview-title">卡片预览</h3>
             <img id="cardPreview" alt="卡片预览" />
-            
+
             <!-- 生成、下载和重置按钮放在右侧预览区域 -->
             <div class="preview-btn-group">
               <button id="generateBtn" class="btn">生成卡片</button>
@@ -651,12 +711,17 @@
       const enableWatermarkInput = document.getElementById("enableWatermark");
       const watermarkTextInput = document.getElementById("watermarkText");
       const watermarkColorInput = document.getElementById("watermarkColor");
-      const watermarkColorValue = document.getElementById("watermarkColorValue");
+      const watermarkColorValue = document.getElementById(
+        "watermarkColorValue"
+      );
       const watermarkOpacityInput = document.getElementById("watermarkOpacity");
-      const watermarkOpacityValue = document.getElementById("watermarkOpacityValue");
+      const watermarkOpacityValue = document.getElementById(
+        "watermarkOpacityValue"
+      );
       const watermarkSizeInput = document.getElementById("watermarkSize");
       const watermarkSizeValue = document.getElementById("watermarkSizeValue");
-      const watermarkPositionSelect = document.getElementById("watermarkPosition");
+      const watermarkPositionSelect =
+        document.getElementById("watermarkPosition");
       const generateBtn = document.getElementById("generateBtn");
       const downloadBtn = document.getElementById("downloadBtn");
       const resetBtn = document.getElementById("resetBtn");
@@ -669,6 +734,40 @@
       // 图片加载
       mainImageInput.addEventListener("change", function (e) {
         loadImage(e.target.files[0], mainImagePreview);
+        
+        // 如果当前选择的是自动样式，则自动提取颜色
+        if (stylePresetSelect.value === "auto" && e.target.files && e.target.files.length > 0) {
+          // 显示加载指示器
+          loadingDiv.classList.add("show");
+          
+          // 加载图片并提取颜色
+          const img = new Image();
+          img.onload = function() {
+            // 提取主体颜色
+            const colors = extractDominantColors(img);
+            
+            // 应用提取的颜色
+            bgColor1Input.value = colors.primary;
+            bgColor1Value.textContent = colors.primary;
+            bgColor2Input.value = colors.secondary;
+            bgColor2Value.textContent = colors.secondary;
+            
+            // 设置渐变方向 - 对角线通常效果较好
+            gradientTypeSelect.value = "to right bottom";
+            
+            // 隐藏加载指示器
+            loadingDiv.classList.remove("show");
+            
+            showMessage("已根据图片最鲜艳的颜色自动设置背景渐变", "success");
+          };
+          
+          img.onerror = function() {
+            loadingDiv.classList.remove("show");
+            showMessage("无法分析图片颜色，已使用默认颜色", "error");
+          };
+          
+          img.src = URL.createObjectURL(e.target.files[0]);
+        }
       });
 
       titleImageInput.addEventListener("change", function (e) {
@@ -687,7 +786,7 @@
       bgColor2Input.addEventListener("input", function () {
         bgColor2Value.textContent = bgColor2Input.value;
       });
-      
+
       // 水印颜色选择器值显示
       watermarkColorInput.addEventListener("input", function () {
         watermarkColorValue.textContent = watermarkColorInput.value;
@@ -713,18 +812,18 @@
       cardShadowInput.addEventListener("input", function () {
         cardShadowValue.textContent = cardShadowInput.value;
       });
-      
+
       // 水印滑块值显示
       watermarkOpacityInput.addEventListener("input", function () {
         watermarkOpacityValue.textContent = watermarkOpacityInput.value;
       });
-      
+
       watermarkSizeInput.addEventListener("input", function () {
         watermarkSizeValue.textContent = watermarkSizeInput.value;
       });
 
       // 生成卡片
-      generateBtn.addEventListener("click", function(e) {
+      generateBtn.addEventListener("click", function (e) {
         e.preventDefault();
         generateCard();
       });
@@ -734,30 +833,33 @@
         if (cardPreview.src) {
           // 获取当前日期时间作为默认文件名的一部分
           const now = new Date();
-          const dateStr = now.getFullYear() + 
-                        ("0" + (now.getMonth() + 1)).slice(-2) + 
-                        ("0" + now.getDate()).slice(-2) + "_" +
-                        ("0" + now.getHours()).slice(-2) + 
-                        ("0" + now.getMinutes()).slice(-2);
-          
+          const dateStr =
+            now.getFullYear() +
+            ("0" + (now.getMonth() + 1)).slice(-2) +
+            ("0" + now.getDate()).slice(-2) +
+            "_" +
+            ("0" + now.getHours()).slice(-2) +
+            ("0" + now.getMinutes()).slice(-2);
+
           // 使用标题作为文件名的一部分（如果有）
           let fileName = "";
           if (cardTitleInput.value.trim()) {
             // 限制文件名长度并移除不合法字符
-            fileName = cardTitleInput.value.trim()
+            fileName = cardTitleInput.value
+              .trim()
               .replace(/[\\/:*?"<>|]/g, "_")
               .substring(0, 30);
             fileName = fileName + "_" + dateStr + ".png";
           } else {
             fileName = "微信图片卡片_" + dateStr + ".png";
           }
-          
+
           // 创建下载链接
           const link = document.createElement("a");
           link.download = fileName;
           link.href = cardPreview.src;
           link.click();
-          
+
           showMessage("图片已下载，可直接插入微信公众号文章", "success");
         }
       });
@@ -843,22 +945,22 @@
             // 计算主图片尺寸和位置
             const mainImageRatio = mainImage.width / mainImage.height;
             let mainImageHeight, mainImageWidth, mainImageX, mainImageY;
-            
+
             // 如果有二维码，使用左右布局，否则居中显示主图片
             if (qrCodeImage) {
               // 左右布局 - 主图片在左，二维码在右
               mainImageHeight = contentHeight * 0.9; // 进一步增加图片高度比例
               mainImageWidth = mainImageHeight * mainImageRatio;
-              
+
               // 如果图片太宽，按宽度调整
               if (mainImageWidth > contentWidth * 0.65) {
                 mainImageWidth = contentWidth * 0.65;
                 mainImageHeight = mainImageWidth / mainImageRatio;
               }
-              
+
               mainImageX = padding + spacing;
               mainImageY = padding + (contentHeight - mainImageHeight) / 2;
-              
+
               // 绘制主图片
               ctx.drawImage(
                 mainImage,
@@ -867,7 +969,7 @@
                 mainImageWidth,
                 mainImageHeight
               );
-              
+
               // 绘制二维码图片（右侧）
               const qrCodeSize = Math.min(
                 contentWidth * 0.3, // 增加二维码尺寸
@@ -875,11 +977,16 @@
               );
               const qrCodeX = padding + totalWidth - spacing - qrCodeSize - 10; // 增加一点间距
               const qrCodeY = padding + (contentHeight - qrCodeSize) / 2;
-              
+
               // 为二维码添加白色背景和边框
               ctx.fillStyle = "white";
-              ctx.fillRect(qrCodeX - 5, qrCodeY - 5, qrCodeSize + 10, qrCodeSize + 10);
-              
+              ctx.fillRect(
+                qrCodeX - 5,
+                qrCodeY - 5,
+                qrCodeSize + 10,
+                qrCodeSize + 10
+              );
+
               // 绘制二维码
               ctx.drawImage(
                 qrCodeImage,
@@ -892,17 +999,17 @@
               // 居中布局 - 只有主图片
               mainImageHeight = contentHeight * 0.95;
               mainImageWidth = mainImageHeight * mainImageRatio;
-              
+
               // 如果图片太宽，按宽度调整
               if (mainImageWidth > contentWidth * 0.9) {
                 mainImageWidth = contentWidth * 0.9;
                 mainImageHeight = mainImageWidth / mainImageRatio;
               }
-              
+
               // 居中显示
               mainImageX = padding + (contentWidth - mainImageWidth) / 2;
               mainImageY = padding + (contentHeight - mainImageHeight) / 2;
-              
+
               // 绘制主图片
               ctx.drawImage(
                 mainImage,
@@ -934,14 +1041,19 @@
               }
 
               // 优化的文字换行 - 支持中文和英文
-              const lines = wrapTextImproved(ctx, text, contentWidth - 60, fontSize);
+              const lines = wrapTextImproved(
+                ctx,
+                text,
+                contentWidth - 60,
+                fontSize
+              );
               const lineHeight = fontSize * 1.3; // 增加行高，提高可读性
               const totalTextHeight = lines.length * lineHeight;
 
               // 计算文字位置 - 根据是否有二维码调整位置
               const textX = cardWidth / 2;
               let textY;
-              
+
               // 如果文字行数较多，放在顶部，否则居中显示
               if (lines.length > 2) {
                 textY = padding + 15; // 顶部位置
@@ -956,10 +1068,19 @@
               const textBgHeight = totalTextHeight + textBgPadding * 2;
               const textBgX = (cardWidth - textBgWidth) / 2;
               const textBgY = textY - textBgPadding;
-              
+
               // 绘制文字背景
               ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
-              roundRect(ctx, textBgX, textBgY, textBgWidth, textBgHeight, 5, true, false);
+              roundRect(
+                ctx,
+                textBgX,
+                textBgY,
+                textBgWidth,
+                textBgHeight,
+                5,
+                true,
+                false
+              );
 
               // 绘制每行文字
               ctx.fillStyle = textColor;
@@ -978,7 +1099,7 @@
             if (enableWatermarkInput.checked) {
               drawWatermark();
             }
-            
+
             // 将画布内容转换为图片并显示
             cardPreview.src = canvas.toDataURL("image/png");
             cardPreview.style.display = "block";
@@ -1069,13 +1190,13 @@
         const y = padding;
         const width = canvas.width - 2 * padding;
         const height = canvas.height - 2 * padding;
-        
+
         // 确保圆角半径不超过卡片尺寸的限制
         radius = Math.min(radius, Math.min(width / 2, height / 2));
 
         // 保存当前绘图状态
         ctx.save();
-        
+
         // 绘制阴影
         if (shadow > 0) {
           ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
@@ -1096,7 +1217,7 @@
         ctx.shadowBlur = 0;
         ctx.shadowOffsetX = 0;
         ctx.shadowOffsetY = 0;
-        
+
         // 恢复绘图状态
         ctx.restore();
       }
@@ -1105,34 +1226,40 @@
       function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
         // 确保半径不超过宽度和高度的一半
         radius = Math.min(radius, Math.min(width / 2, height / 2));
-        
+
         ctx.beginPath();
-        
+
         // 从左上角开始，顺时针绘制
         ctx.moveTo(x + radius, y);
-        
+
         // 上边
         ctx.lineTo(x + width - radius, y);
         // 右上角
         ctx.arcTo(x + width, y, x + width, y + radius, radius);
-        
+
         // 右边
         ctx.lineTo(x + width, y + height - radius);
         // 右下角
-        ctx.arcTo(x + width, y + height, x + width - radius, y + height, radius);
-        
+        ctx.arcTo(
+          x + width,
+          y + height,
+          x + width - radius,
+          y + height,
+          radius
+        );
+
         // 下边
         ctx.lineTo(x + radius, y + height);
         // 左下角
         ctx.arcTo(x, y + height, x, y + height - radius, radius);
-        
+
         // 左边
         ctx.lineTo(x, y + radius);
         // 左上角
         ctx.arcTo(x, y, x + radius, y, radius);
-        
+
         ctx.closePath();
-        
+
         if (fill) {
           ctx.fill();
         }
@@ -1145,7 +1272,7 @@
       function wrapTextImproved(context, text, maxWidth, fontSize) {
         // 检测是否包含中文字符
         const containsChinese = /[\u4e00-\u9fa5]/.test(text);
-        
+
         if (containsChinese) {
           // 中文文本处理 - 按字符分割
           return wrapChineseText(context, text, maxWidth);
@@ -1154,19 +1281,19 @@
           return wrapEnglishText(context, text, maxWidth);
         }
       }
-      
+
       // 中文文本换行
       function wrapChineseText(context, text, maxWidth) {
         const lines = [];
         let currentLine = "";
-        
+
         // 逐字符检查
         for (let i = 0; i < text.length; i++) {
           const char = text[i];
           const testLine = currentLine + char;
           const metrics = context.measureText(testLine);
           const testWidth = metrics.width;
-          
+
           if (testWidth > maxWidth && currentLine !== "") {
             lines.push(currentLine);
             currentLine = char;
@@ -1174,15 +1301,15 @@
             currentLine = testLine;
           }
         }
-        
+
         // 添加最后一行
         if (currentLine !== "") {
           lines.push(currentLine);
         }
-        
+
         return lines;
       }
-      
+
       // 英文文本换行
       function wrapEnglishText(context, text, maxWidth) {
         const words = text.split(" ");
@@ -1209,16 +1336,16 @@
       function showMessage(message, type) {
         // 成功消息使用更短的显示时间，错误消息保持较长时间
         const displayTime = type === "success" ? 2000 : 3000;
-        
+
         // 更新toast内容和样式
         const toastDiv = document.getElementById("toast");
         toastDiv.textContent = message;
         toastDiv.className = "toast toast-" + type;
-        
+
         // 显示toast
         setTimeout(() => {
           toastDiv.classList.add("show");
-          
+
           // 设置自动隐藏
           setTimeout(() => {
             toastDiv.classList.remove("show");
@@ -1226,11 +1353,195 @@
         }, 10);
       }
 
-      // 微信样式预设
-      stylePresetSelect.addEventListener("change", function() {
-        const preset = stylePresetSelect.value;
+      // 提取图片主体颜色函数 - 选择最鲜亮的颜色，排除黑色和白色
+      function extractDominantColors(image) {
+        // 创建一个临时画布来分析图片颜色
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
         
-        switch(preset) {
+        // 设置较小的尺寸以提高性能
+        const size = 100; // 增加尺寸以获取更多颜色样本
+        tempCanvas.width = size;
+        tempCanvas.height = size;
+        
+        // 在临时画布上绘制图片
+        tempCtx.drawImage(image, 0, 0, size, size);
+        
+        // 获取图片数据
+        const imageData = tempCtx.getImageData(0, 0, size, size).data;
+        
+        // 用于存储颜色信息
+        const colorInfo = [];
+        
+        // 分析每个像素
+        for (let i = 0; i < imageData.length; i += 4) {
+          const r = imageData[i];
+          const g = imageData[i + 1];
+          const b = imageData[i + 2];
+          const a = imageData[i + 3];
+          
+          // 忽略透明像素
+          if (a < 128) continue;
+          
+          // 将RGB值量化为更少的颜色，以便更好地分组
+          const quantizedR = Math.round(r / 24) * 24;
+          const quantizedG = Math.round(g / 24) * 24;
+          const quantizedB = Math.round(b / 24) * 24;
+          
+          // 计算颜色的亮度 (0-255)
+          const brightness = (quantizedR * 299 + quantizedG * 587 + quantizedB * 114) / 1000;
+          
+          // 计算颜色的饱和度 (0-1)
+          const max = Math.max(quantizedR, quantizedG, quantizedB);
+          const min = Math.min(quantizedR, quantizedG, quantizedB);
+          let saturation = 0;
+          if (max !== 0) {
+            saturation = (max - min) / max;
+          }
+          
+          // 计算颜色的鲜艳度 (饱和度 * 亮度的适中值)
+          // 亮度太低或太高的颜色都不够鲜艳
+          const brightnessWeight = 1 - Math.abs((brightness - 128) / 128);
+          const vividness = saturation * brightnessWeight;
+          
+          // 排除接近黑色和白色的颜色
+          // 黑色: 亮度很低
+          // 白色: 亮度很高且饱和度很低
+          const isBlack = brightness < 40;
+          const isWhite = brightness > 200 && saturation < 0.2;
+          
+          if (!isBlack && !isWhite) {
+            const colorKey = `${quantizedR},${quantizedG},${quantizedB}`;
+            
+            // 存储颜色信息，包括RGB值、鲜艳度和出现次数
+            colorInfo.push({
+              key: colorKey,
+              r: quantizedR,
+              g: quantizedG,
+              b: quantizedB,
+              vividness: vividness,
+              count: 1
+            });
+          }
+        }
+        
+        // 合并相同颜色并计算总数
+        const colorMap = {};
+        colorInfo.forEach(info => {
+          if (colorMap[info.key]) {
+            colorMap[info.key].count += info.count;
+          } else {
+            colorMap[info.key] = info;
+          }
+        });
+        
+        // 将颜色转换为数组并排序
+        // 首先按鲜艳度排序，然后按出现次数排序
+        const sortedColors = Object.values(colorMap).sort((a, b) => {
+          // 鲜艳度权重 (70%) + 出现频率权重 (30%)
+          const aScore = a.vividness * 0.7 + (a.count / colorInfo.length) * 0.3;
+          const bScore = b.vividness * 0.7 + (b.count / colorInfo.length) * 0.3;
+          return bScore - aScore;
+        });
+        
+        // 如果没有找到合适的颜色，返回默认颜色
+        if (sortedColors.length === 0) {
+          return {
+            primary: '#D5E7FB',
+            secondary: '#9EBEFA'
+          };
+        }
+        
+        // 获取最鲜艳的颜色作为主色调
+        const primaryColor = `#${sortedColors[0].r.toString(16).padStart(2, '0')}${sortedColors[0].g.toString(16).padStart(2, '0')}${sortedColors[0].b.toString(16).padStart(2, '0')}`;
+        
+        // 生成次要颜色 - 可以是主色调的互补色或变体
+        let secondaryColor;
+        
+        // 判断主色调的亮度
+        const primaryBrightness = (sortedColors[0].r * 299 + sortedColors[0].g * 587 + sortedColors[0].b * 114) / 1000;
+        
+        if (primaryBrightness > 128) {
+          // 如果主色调较亮，生成较暗的次要颜色
+          const darkerR = Math.max(0, sortedColors[0].r - 60);
+          const darkerG = Math.max(0, sortedColors[0].g - 60);
+          const darkerB = Math.max(0, sortedColors[0].b - 60);
+          secondaryColor = `#${darkerR.toString(16).padStart(2, '0')}${darkerG.toString(16).padStart(2, '0')}${darkerB.toString(16).padStart(2, '0')}`;
+        } else {
+          // 如果主色调较暗，生成较亮的次要颜色
+          const lighterR = Math.min(255, sortedColors[0].r + 60);
+          const lighterG = Math.min(255, sortedColors[0].g + 60);
+          const lighterB = Math.min(255, sortedColors[0].b + 60);
+          secondaryColor = `#${lighterR.toString(16).padStart(2, '0')}${lighterG.toString(16).padStart(2, '0')}${lighterB.toString(16).padStart(2, '0')}`;
+        }
+        
+        return {
+          primary: primaryColor,
+          secondary: secondaryColor
+        };
+      }
+      
+      // 微信样式预设
+      stylePresetSelect.addEventListener("change", function () {
+        const preset = stylePresetSelect.value;
+
+        switch (preset) {
+          case "auto":
+            // 自动模式 - 需要检查是否已上传主图片
+            if (mainImageInput.files && mainImageInput.files.length > 0) {
+              // 显示加载指示器
+              loadingDiv.classList.add("show");
+              
+              // 加载图片并提取颜色
+              const img = new Image();
+              img.onload = function() {
+                // 提取主体颜色
+                const colors = extractDominantColors(img);
+                
+                // 应用提取的颜色
+                bgColor1Input.value = colors.primary;
+                bgColor1Value.textContent = colors.primary;
+                bgColor2Input.value = colors.secondary;
+                bgColor2Value.textContent = colors.secondary;
+                
+                // 设置渐变方向 - 对角线通常效果较好
+                gradientTypeSelect.value = "to right bottom";
+                
+                // 隐藏加载指示器
+                loadingDiv.classList.remove("show");
+                
+                showMessage("已根据图片最鲜艳的颜色自动设置背景渐变", "success");
+              };
+              
+              img.onerror = function() {
+                // 加载失败时使用默认颜色
+                bgColor1Input.value = "#D5E7FB";
+                bgColor1Value.textContent = "#D5E7FB";
+                bgColor2Input.value = "#9EBEFA";
+                bgColor2Value.textContent = "#9EBEFA";
+                
+                loadingDiv.classList.remove("show");
+                showMessage("无法分析图片颜色，已使用默认颜色", "error");
+              };
+              
+              img.src = URL.createObjectURL(mainImageInput.files[0]);
+            } else {
+              showMessage("请先上传主图片，再使用自动颜色功能", "error");
+              // 重置为默认样式
+              stylePresetSelect.value = "default";
+              
+              // 应用默认样式
+              bgColor1Input.value = "#D5E7FB";
+              bgColor1Value.textContent = "#D5E7FB";
+              bgColor2Input.value = "#9EBEFA";
+              bgColor2Value.textContent = "#9EBEFA";
+              gradientTypeSelect.value = "to right";
+              cardRadiusInput.value = "0";
+              cardRadiusValue.textContent = "0";
+              cardShadowInput.value = "5";
+              cardShadowValue.textContent = "5";
+            }
+            break;
           case "wechat-blue":
             // 微信蓝色调
             bgColor1Input.value = "#1E90FF";
@@ -1309,28 +1620,29 @@
             break;
         }
       });
-      
+
       // 绘制水印
       function drawWatermark() {
-        const watermarkText = watermarkTextInput.value.trim() || "公众号:科技研习室";
+        const watermarkText =
+          watermarkTextInput.value.trim() || "公众号:科技研习室";
         const watermarkColor = watermarkColorInput.value;
         const watermarkOpacity = parseInt(watermarkOpacityInput.value) / 100;
         const watermarkSize = parseInt(watermarkSizeInput.value);
         const watermarkPosition = watermarkPositionSelect.value;
-        
+
         // 保存当前上下文状态
         ctx.save();
-        
+
         // 设置水印样式
         ctx.font = `${watermarkSize}px Arial`;
         ctx.fillStyle = hexToRgba(watermarkColor, watermarkOpacity);
-        
+
         // 计算水印位置，确保不会覆盖二维码
         let x, y;
         const padding = 20; // 边缘内边距
         const textWidth = ctx.measureText(watermarkText).width;
         const textHeight = watermarkSize;
-        
+
         // 根据选择的位置确定坐标
         switch (watermarkPosition) {
           case "bottom-right":
@@ -1358,17 +1670,17 @@
             x = padding;
             y = canvas.height - padding;
         }
-        
+
         // 设置文本基线
         ctx.textBaseline = "bottom";
-        
+
         // 绘制水印
         ctx.fillText(watermarkText, x, y);
-        
+
         // 恢复上下文状态
         ctx.restore();
       }
-      
+
       // 将十六进制颜色转换为带透明度的rgba
       function hexToRgba(hex, alpha) {
         const r = parseInt(hex.slice(1, 3), 16);
@@ -1376,7 +1688,7 @@
         const b = parseInt(hex.slice(5, 7), 16);
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;
       }
-      
+
       // 重置表单
       function resetForm() {
         // 重置输入字段
@@ -1406,7 +1718,7 @@
         cardRadiusValue.textContent = "0";
         cardShadowInput.value = "5";
         cardShadowValue.textContent = "5";
-        
+
         // 重置水印设置
         enableWatermarkInput.checked = true;
         watermarkTextInput.value = "公众号:科技研习室";
@@ -1425,7 +1737,7 @@
 
         // 隐藏消息
         toastDiv.classList.remove("show");
-        
+
         showMessage("已重置所有设置", "success");
       }
     </script>
