@@ -421,8 +421,9 @@
               <div class="form-group">
                 <label for="stylePreset">微信样式预设</label>
                 <select id="stylePreset">
-                  <option value="default">默认样式</option>
+                  <option value="random" selected>随机(生成美观渐变)</option>
                   <option value="auto">自动(提取图片最鲜艳颜色)</option>
+                  <option value="default">默认样式</option>
                   <option value="wechat-blue">微信蓝</option>
                   <option value="wechat-green">微信绿</option>
                   <option value="elegant">简约风格</option>
@@ -767,6 +768,31 @@
           };
           
           img.src = URL.createObjectURL(e.target.files[0]);
+        }
+        // 如果当前选择的是随机样式，则自动生成随机渐变色
+        else if (stylePresetSelect.value === "random" && e.target.files && e.target.files.length > 0) {
+          // 生成随机美观渐变
+          const randomColors = generateRandomGradientColors();
+          bgColor1Input.value = randomColors.primary;
+          bgColor1Value.textContent = randomColors.primary;
+          bgColor2Input.value = randomColors.secondary;
+          bgColor2Value.textContent = randomColors.secondary;
+          
+          // 随机选择渐变方向
+          const directions = ["to right", "to bottom", "to right bottom", "to left bottom"];
+          const randomDirection = directions[Math.floor(Math.random() * directions.length)];
+          gradientTypeSelect.value = randomDirection;
+          
+          // 随机设置圆角和阴影
+          const radius = Math.floor(Math.random() * 16); // 0-15的圆角
+          cardRadiusInput.value = radius.toString();
+          cardRadiusValue.textContent = radius.toString();
+          
+          const shadow = 3 + Math.floor(Math.random() * 8); // 3-10的阴影
+          cardShadowInput.value = shadow.toString();
+          cardShadowValue.textContent = shadow.toString();
+          
+          showMessage("已生成随机美观渐变背景", "success");
         }
       });
 
@@ -1353,6 +1379,85 @@
         }, 10);
       }
 
+      // 生成随机美观渐变颜色
+      function generateRandomGradientColors() {
+        // 预定义的美观色调范围
+        const hueRanges = [
+          [0, 30],     // 红色到橙色
+          [30, 60],    // 橙色到黄色
+          [60, 150],   // 黄色到绿色
+          [150, 210],  // 绿色到青色
+          [210, 270],  // 青色到蓝色
+          [270, 330],  // 蓝色到紫色
+          [330, 360]   // 紫色到红色
+        ];
+        
+        // 随机选择一个色调范围
+        const selectedRange = hueRanges[Math.floor(Math.random() * hueRanges.length)];
+        
+        // 在选定的范围内生成随机色调
+        const hue1 = Math.floor(Math.random() * (selectedRange[1] - selectedRange[0])) + selectedRange[0];
+        
+        // 为了美观，第二个颜色的色调应该与第一个颜色有一定的差异，但不要太大
+        // 在同一色调范围内，相差30-60度的色调通常看起来很协调
+        let hue2Diff = 30 + Math.floor(Math.random() * 30); // 30-60度的差异
+        if (Math.random() > 0.5) hue2Diff = -hue2Diff; // 50%的概率向反方向偏移
+        
+        let hue2 = (hue1 + hue2Diff) % 360;
+        if (hue2 < 0) hue2 += 360; // 确保色调在0-360范围内
+        
+        // 饱和度和亮度也要适中，以确保颜色美观
+        const saturation1 = 70 + Math.floor(Math.random() * 30); // 70-100%
+        const saturation2 = 70 + Math.floor(Math.random() * 30); // 70-100%
+        
+        const lightness1 = 40 + Math.floor(Math.random() * 30); // 40-70%
+        const lightness2 = 40 + Math.floor(Math.random() * 30); // 40-70%
+        
+        // 将HSL转换为RGB，然后转换为十六进制颜色代码
+        const color1 = hslToHex(hue1, saturation1, lightness1);
+        const color2 = hslToHex(hue2, saturation2, lightness2);
+        
+        return {
+          primary: color1,
+          secondary: color2
+        };
+      }
+      
+      // HSL颜色转换为十六进制颜色代码
+      function hslToHex(h, s, l) {
+        // 将饱和度和亮度转换为0-1范围
+        s /= 100;
+        l /= 100;
+        
+        const c = (1 - Math.abs(2 * l - 1)) * s;
+        const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+        const m = l - c / 2;
+        
+        let r, g, b;
+        
+        if (h >= 0 && h < 60) {
+          r = c; g = x; b = 0;
+        } else if (h >= 60 && h < 120) {
+          r = x; g = c; b = 0;
+        } else if (h >= 120 && h < 180) {
+          r = 0; g = c; b = x;
+        } else if (h >= 180 && h < 240) {
+          r = 0; g = x; b = c;
+        } else if (h >= 240 && h < 300) {
+          r = x; g = 0; b = c;
+        } else {
+          r = c; g = 0; b = x;
+        }
+        
+        // 将RGB值转换为0-255范围，然后转换为十六进制
+        r = Math.round((r + m) * 255);
+        g = Math.round((g + m) * 255);
+        b = Math.round((b + m) * 255);
+        
+        // 转换为十六进制颜色代码
+        return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+      }
+      
       // 提取图片主体颜色函数 - 选择最鲜亮的颜色，排除黑色和白色
       function extractDominantColors(image) {
         // 创建一个临时画布来分析图片颜色
@@ -1486,6 +1591,30 @@
         const preset = stylePresetSelect.value;
 
         switch (preset) {
+          case "random":
+            // 随机美观渐变
+            const randomColors = generateRandomGradientColors();
+            bgColor1Input.value = randomColors.primary;
+            bgColor1Value.textContent = randomColors.primary;
+            bgColor2Input.value = randomColors.secondary;
+            bgColor2Value.textContent = randomColors.secondary;
+            
+            // 随机选择渐变方向
+            const directions = ["to right", "to bottom", "to right bottom", "to left bottom"];
+            const randomDirection = directions[Math.floor(Math.random() * directions.length)];
+            gradientTypeSelect.value = randomDirection;
+            
+            // 随机设置圆角和阴影
+            const radius = Math.floor(Math.random() * 16); // 0-15的圆角
+            cardRadiusInput.value = radius.toString();
+            cardRadiusValue.textContent = radius.toString();
+            
+            const shadow = 3 + Math.floor(Math.random() * 8); // 3-10的阴影
+            cardShadowInput.value = shadow.toString();
+            cardShadowValue.textContent = shadow.toString();
+            
+            showMessage("已生成随机美观渐变背景", "success");
+            break;
           case "auto":
             // 自动模式 - 需要检查是否已上传主图片
             if (mainImageInput.files && mainImageInput.files.length > 0) {
@@ -1689,6 +1818,13 @@
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;
       }
 
+      // 页面加载完成后初始化
+      document.addEventListener('DOMContentLoaded', function() {
+        // 触发样式预设的change事件，应用随机样式
+        const event = new Event('change');
+        stylePresetSelect.dispatchEvent(event);
+      });
+      
       // 重置表单
       function resetForm() {
         // 重置输入字段
@@ -1706,18 +1842,29 @@
         textSizeValue.textContent = "24";
         textShadowInput.value = "0";
         textShadowValue.textContent = "0";
-        stylePresetSelect.value = "default";
-        bgColor1Input.value = "#D5E7FB";
-        bgColor1Value.textContent = "#D5E7FB";
-        bgColor2Input.value = "#9EBEFA";
-        bgColor2Value.textContent = "#9EBEFA";
-        gradientTypeSelect.value = "to right";
+        stylePresetSelect.value = "random";
+        // 生成随机美观渐变
+        const randomColors = generateRandomGradientColors();
+        bgColor1Input.value = randomColors.primary;
+        bgColor1Value.textContent = randomColors.primary;
+        bgColor2Input.value = randomColors.secondary;
+        bgColor2Value.textContent = randomColors.secondary;
+        // 随机选择渐变方向
+        const directions = ["to right", "to bottom", "to right bottom", "to left bottom"];
+        const randomDirection = directions[Math.floor(Math.random() * directions.length)];
+        gradientTypeSelect.value = randomDirection;
+        
         cardPaddingInput.value = "0";
         cardPaddingValue.textContent = "0";
-        cardRadiusInput.value = "0";
-        cardRadiusValue.textContent = "0";
-        cardShadowInput.value = "5";
-        cardShadowValue.textContent = "5";
+        
+        // 随机设置圆角和阴影
+        const radius = Math.floor(Math.random() * 16); // 0-15的圆角
+        cardRadiusInput.value = radius.toString();
+        cardRadiusValue.textContent = radius.toString();
+        
+        const shadow = 3 + Math.floor(Math.random() * 8); // 3-10的阴影
+        cardShadowInput.value = shadow.toString();
+        cardShadowValue.textContent = shadow.toString();
 
         // 重置水印设置
         enableWatermarkInput.checked = true;
