@@ -1159,9 +1159,17 @@
 
       // 绘制背景
       function drawBackground() {
-        const bgColor1 = bgColor1Input.value;
-        const bgColor2 = bgColor2Input.value;
+        let bgColor1 = bgColor1Input.value;
+        let bgColor2 = bgColor2Input.value;
         const gradientType = gradientTypeSelect.value;
+
+        // 验证颜色值是否有效，如果无效则使用默认值
+        if (!/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(bgColor1)) {
+          bgColor1 = "#D5E7FB"; // 默认颜色1
+        }
+        if (!/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(bgColor2)) {
+          bgColor2 = "#9EBEFA"; // 默认颜色2
+        }
 
         let gradient;
 
@@ -1198,6 +1206,12 @@
               x1 = canvas.width;
               y1 = canvas.height;
               break;
+          }
+
+          // 确保渐变坐标是有限的数字
+          if (!isFinite(x0) || !isFinite(y0) || !isFinite(x1) || !isFinite(y1)) {
+            console.warn("Gradient coordinates are non-finite, using fallback.");
+            x0 = 0; y0 = 0; x1 = canvas.width; y1 = canvas.height; // Fallback to a safe gradient
           }
 
           gradient = ctx.createLinearGradient(x0, y0, x1, y1);
