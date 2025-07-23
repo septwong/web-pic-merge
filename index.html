@@ -15,15 +15,15 @@
     -->
     <style>
       :root {
-        --primary-color: #4a6bdf;
-        --secondary-color: #6c5ce7;
+        --primary-color: #07C160; /* 微信绿 */
+        --secondary-color: #10AEFF; /* 微信蓝 */
         --light-color: #f8f9fa;
         --dark-color: #343a40;
-        --success-color: #28a745;
-        --danger-color: #dc3545;
-        --warning-color: #ffc107;
-        --bg-color1: #d5e7fb;
-        --bg-color2: #9ebefa;
+        --success-color: #07C160; /* 微信绿 */
+        --danger-color: #FA5151; /* 微信红 */
+        --warning-color: #FF9F0F; /* 微信橙 */
+        --bg-color1: #D9F7BE; /* 浅绿渐变 */
+        --bg-color2: #B5F5EC; /* 浅蓝渐变 */
       }
 
       * {
@@ -328,11 +328,17 @@
         font-weight: 500;
       }
 
+      .image-preview-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
       .image-preview {
         max-width: 100%;
         max-height: 150px;
-        margin-top: 10px;
-        display: none;
+        display: block;
         border-radius: 4px;
       }
 
@@ -397,16 +403,20 @@
               <div class="form-group">
                 <label for="imageUpload">上传图片 (主图片和二维码图片)</label>
                 <input type="file" id="imageUpload" accept="image/*" multiple />
-                <img
-                  id="mainImagePreview"
-                  class="image-preview"
-                  alt="主图片预览"
-                />
-                <img
-                  id="titleImagePreview"
-                  class="image-preview"
-                  alt="二维码图片预览"
-                />
+        <input type="file" id="mainImage" accept="image/*" style="display: none;" />
+        <input type="file" id="titleImage" accept="image/*" style="display: none;" />
+                <div class="image-preview-container">
+                  <img
+                    id="mainImagePreview"
+                    class="image-preview"
+                    alt="主图片预览"
+                  />
+                  <img
+                    id="titleImagePreview"
+                    class="image-preview"
+                    alt="二维码图片预览"
+                  />
+                </div>
               </div>
             </div>
 
@@ -426,6 +436,10 @@
                   <option value="cool">冷色调</option>
                   <option value="custom">自定义</option>
                 </select>
+              </div>
+
+              <div class="form-group">
+                <button id="randomGradientBtn" class="btn">随机渐变</button>
               </div>
 
               <div class="form-group">
@@ -680,6 +694,8 @@
     <script>
       // DOM元素
       const imageUploadInput = document.getElementById("imageUpload");
+        const mainImageInput = document.getElementById("mainImage");
+        const titleImageInput = document.getElementById("titleImage");
       const mainImagePreview = document.getElementById("mainImagePreview");
       const titleImagePreview = document.getElementById("titleImagePreview");
       const cardTitleInput = document.getElementById("cardTitle");
@@ -891,7 +907,11 @@
 
       // 加载图片函数
       function loadImage(file, previewElement) {
-        if (!file) return;
+        if (!file) {
+          previewElement.src = "";
+          previewElement.style.display = "none";
+          return;
+        }
 
         // 验证图片类型
         const validTypes = [
@@ -902,12 +922,16 @@
         ];
         if (!validTypes.includes(file.type)) {
           showMessage("请上传有效的图片文件 (JPEG, PNG, GIF, WEBP)", "error");
+          previewElement.src = "";
+          previewElement.style.display = "none";
           return;
         }
 
         // 验证图片大小 (最大5MB)
         if (file.size > 5 * 1024 * 1024) {
           showMessage("图片大小不能超过5MB", "error");
+          previewElement.src = "";
+          previewElement.style.display = "none";
           return;
         }
 
@@ -933,11 +957,13 @@
 
         // 异步加载所有图片
         Promise.all([
-          loadImageAsync(mainImagePreview.src),
-          titleImagePreview.src
-            ? loadImageAsync(titleImagePreview.src)
-            : Promise.resolve(null),
-        ])
+                mainImagePreview.src
+                  ? loadImageAsync(mainImagePreview.src)
+                  : Promise.resolve(null),
+                titleImagePreview.src
+                  ? loadImageAsync(titleImagePreview.src)
+                  : Promise.resolve(null),
+              ])
           .then(([mainImage, qrCodeImage]) => {
             // 设置画布尺寸 - 微信公众号图片推荐宽度为900px，增加高度使图片占比更大
             const cardWidth = 900;
@@ -1392,36 +1418,33 @@
       // 生成随机美观渐变颜色
       function generateRandomGradientColors() {
         // 预定义的美观色调范围
-        const hueRanges = [
-          [0, 30],     // 红色到橙色
-          [30, 60],    // 橙色到黄色
-          [60, 150],   // 黄色到绿色
-          [150, 210],  // 绿色到青色
-          [210, 270],  // 青色到蓝色
-          [270, 330],  // 蓝色到紫色
-          [330, 360]   // 紫色到红色
+        // 预定义的美观色调范围，参考微信蓝、微信绿、暖色调等
+        const presetGradients = [
+          // 微信蓝 (接近)
+          { h1: [200, 220], s1: [70, 90], l1: [50, 70], h2: [200, 220], s2: [50, 70], l2: [70, 90] },
+          // 微信绿 (接近)
+          { h1: [140, 160], s1: [70, 90], l1: [40, 60], h2: [140, 160], s2: [50, 70], l2: [60, 80] },
+          // 暖色调 (接近)
+          { h1: [30, 50], s1: [80, 100], l1: [50, 70], h2: [10, 30], s2: [70, 90], l2: [60, 80] },
+          // 柔和蓝紫
+          { h1: [240, 260], s1: [50, 70], l1: [60, 80], h2: [270, 290], s2: [40, 60], l2: [70, 90] },
+          // 清新绿黄
+          { h1: [80, 100], s1: [60, 80], l1: [50, 70], h2: [60, 80], s2: [50, 70], l2: [60, 80] },
+          // 活力橙红
+          { h1: [0, 20], s1: [80, 100], l1: [50, 70], h2: [330, 350], s2: [70, 90], l2: [60, 80] }
         ];
         
-        // 随机选择一个色调范围
-        const selectedRange = hueRanges[Math.floor(Math.random() * hueRanges.length)];
+        // 随机选择一个预设渐变
+        const selectedPreset = presetGradients[Math.floor(Math.random() * presetGradients.length)];
         
-        // 在选定的范围内生成随机色调
-        const hue1 = Math.floor(Math.random() * (selectedRange[1] - selectedRange[0])) + selectedRange[0];
+        // 在选定的范围内生成随机色调、饱和度和亮度
+        const hue1 = Math.floor(Math.random() * (selectedPreset.h1[1] - selectedPreset.h1[0])) + selectedPreset.h1[0];
+        const saturation1 = Math.floor(Math.random() * (selectedPreset.s1[1] - selectedPreset.s1[0])) + selectedPreset.s1[0];
+        const lightness1 = Math.floor(Math.random() * (selectedPreset.l1[1] - selectedPreset.l1[0])) + selectedPreset.l1[0];
         
-        // 为了美观，第二个颜色的色调应该与第一个颜色有一定的差异，但不要太大
-        // 在同一色调范围内，相差30-60度的色调通常看起来很协调
-        let hue2Diff = 30 + Math.floor(Math.random() * 30); // 30-60度的差异
-        if (Math.random() > 0.5) hue2Diff = -hue2Diff; // 50%的概率向反方向偏移
-        
-        let hue2 = (hue1 + hue2Diff) % 360;
-        if (hue2 < 0) hue2 += 360; // 确保色调在0-360范围内
-        
-        // 饱和度和亮度也要适中，以确保颜色美观
-        const saturation1 = 40 + Math.floor(Math.random() * 30); // 40-70%
-        const saturation2 = 40 + Math.floor(Math.random() * 30); // 40-70%
-        
-        const lightness1 = 40 + Math.floor(Math.random() * 30); // 40-70%
-        const lightness2 = 40 + Math.floor(Math.random() * 30); // 40-70%
+        const hue2 = Math.floor(Math.random() * (selectedPreset.h2[1] - selectedPreset.h2[0])) + selectedPreset.h2[0];
+        const saturation2 = Math.floor(Math.random() * (selectedPreset.s2[1] - selectedPreset.s2[0])) + selectedPreset.s2[0];
+        const lightness2 = Math.floor(Math.random() * (selectedPreset.l2[1] - selectedPreset.l2[0])) + selectedPreset.l2[0];
         
         // 将HSL转换为RGB，然后转换为十六进制颜色代码
         const color1 = hslToHex(hue1, saturation1, lightness1);
@@ -1596,6 +1619,30 @@
         };
       }
       
+      // 随机渐变按钮事件监听器
+      const randomGradientBtn = document.getElementById("randomGradientBtn");
+      randomGradientBtn.addEventListener("click", function() {
+        const randomColors = generateRandomGradientColors();
+        bgColor1Input.value = randomColors.primary;
+        bgColor1Value.textContent = randomColors.primary;
+        bgColor2Input.value = randomColors.secondary;
+        bgColor2Value.textContent = randomColors.secondary;
+
+        const directions = ["to right", "to bottom", "to right bottom", "to left bottom"];
+        const randomDirection = directions[Math.floor(Math.random() * directions.length)];
+        gradientTypeSelect.value = randomDirection;
+
+        const radius = Math.floor(Math.random() * 16); // 0-15的圆角
+        cardRadiusInput.value = radius.toString();
+        cardRadiusValue.textContent = radius.toString();
+
+        const shadow = 3 + Math.floor(Math.random() * 8); // 3-10的阴影
+        cardShadowInput.value = shadow.toString();
+        cardShadowValue.textContent = shadow.toString();
+
+        showMessage("已生成随机美观渐变背景", "success");
+      });
+
       // 微信样式预设
       stylePresetSelect.addEventListener("change", function () {
         const preset = stylePresetSelect.value;
@@ -1833,11 +1880,14 @@
         // 触发样式预设的change事件，应用随机样式
         const event = new Event('change');
         stylePresetSelect.dispatchEvent(event);
+        // 页面加载时调用resetForm，确保图片预览隐藏
+        resetForm();
       });
       
       // 重置表单
       function resetForm() {
         // 重置输入字段
+        imageUploadInput.value = "";
         mainImageInput.value = "";
         titleImageInput.value = "";
         mainImagePreview.src = "";
@@ -1853,28 +1903,16 @@
         textShadowInput.value = "0";
         textShadowValue.textContent = "0";
         stylePresetSelect.value = "random";
-        // 生成随机美观渐变
+        // 随机生成渐变色、渐变方向、圆角和阴影
         const randomColors = generateRandomGradientColors();
         bgColor1Input.value = randomColors.primary;
         bgColor1Value.textContent = randomColors.primary;
         bgColor2Input.value = randomColors.secondary;
         bgColor2Value.textContent = randomColors.secondary;
-        // 随机选择渐变方向
         const directions = ["to right", "to bottom", "to right bottom", "to left bottom"];
-        const randomDirection = directions[Math.floor(Math.random() * directions.length)];
-        gradientTypeSelect.value = randomDirection;
-        
-        cardPaddingInput.value = "0";
-        cardPaddingValue.textContent = "0";
-        
-        // 随机设置圆角和阴影
-        const radius = Math.floor(Math.random() * 16); // 0-15的圆角
-        cardRadiusInput.value = radius.toString();
-        cardRadiusValue.textContent = radius.toString();
-        
-        const shadow = 3 + Math.floor(Math.random() * 8); // 3-10的阴影
-        cardShadowInput.value = shadow.toString();
-        cardShadowValue.textContent = shadow.toString();
+        gradientTypeSelect.value = directions[Math.floor(Math.random() * directions.length)];
+        cardRadiusInput.value = Math.floor(Math.random() * 16).toString();
+        cardShadowInput.value = (3 + Math.floor(Math.random() * 8)).toString();
 
         // 重置水印设置
         enableWatermarkInput.checked = true;
