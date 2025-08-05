@@ -721,6 +721,7 @@
                 <div class="form-group">
                   <label for="watermarkPosition">水印位置</label>
                   <select id="watermarkPosition">
+                    <option value="tile">斜铺</option>
                     <option value="bottom-right">右下角</option>
                     <option value="bottom-left">左下角</option>
                     <option value="top-right">右上角</option>
@@ -979,7 +980,7 @@
 
             // 设置画布尺寸
             const cardWidth = 900;
-            const cardHeight = 900;
+            const cardHeight = 1200;
             canvas.width = cardWidth;
             canvas.height = cardHeight;
 
@@ -992,43 +993,58 @@
             const shadow = parseInt(cardShadowInput.value);
             drawCardArea(padding, radius, shadow);
 
+            // 绘制水印
+            if (enableWatermarkInput.checked) {
+              drawWatermark();
+            }
+
             const contentWidth = cardWidth - 2 * padding;
             const contentHeight = cardHeight - 2 * padding;
-            const spacing = contentWidth * 0.1;
+            const spacing = contentWidth * 0.05; // Adjust spacing for the new layout
 
             // 绘制主图片
             const mainImageRatio = mainImage.width / mainImage.height;
             let mainImageHeight, mainImageWidth, mainImageX, mainImageY;
 
             if (qrCodeImage) {
-              mainImageHeight = contentHeight * 0.9;
-              mainImageWidth = mainImageHeight * mainImageRatio;
-              if (mainImageWidth > contentWidth * 0.65) {
-                mainImageWidth = contentWidth * 0.65;
-                mainImageHeight = mainImageWidth / mainImageRatio;
+              // Left-Right Layout
+              const qrCodeSize = contentWidth * 0.25; // Allocate space for QR code
+              const mainImageMaxWidth = contentWidth - qrCodeSize - spacing * 2;
+              const mainImageMaxHeight = contentHeight * 0.95;
+
+              mainImageWidth = mainImageMaxWidth;
+              mainImageHeight = mainImageWidth / mainImageRatio;
+
+              if (mainImageHeight > mainImageMaxHeight) {
+                mainImageHeight = mainImageMaxHeight;
+                mainImageWidth = mainImageHeight * mainImageRatio;
               }
+
               mainImageX = padding + spacing;
               mainImageY = padding + (contentHeight - mainImageHeight) / 2;
+              
+              ctx.drawImage(mainImage, mainImageX, mainImageY, mainImageWidth, mainImageHeight);
+
+              // 绘制二维码
+              const finalQrCodeSize = Math.min(qrCodeSize, qrCodeImage.width, qrCodeImage.height);
+              const qrCodeX = cardWidth - padding - spacing - finalQrCodeSize;
+              const qrCodeY = padding + (contentHeight - finalQrCodeSize) / 2;
+              
+              ctx.fillStyle = "white";
+              ctx.fillRect(qrCodeX - 5, qrCodeY - 5, finalQrCodeSize + 10, finalQrCodeSize + 10);
+              ctx.drawImage(qrCodeImage, qrCodeX, qrCodeY, finalQrCodeSize, finalQrCodeSize);
+
             } else {
+              // No QR code, center the main image
               mainImageHeight = contentHeight * 0.95;
               mainImageWidth = mainImageHeight * mainImageRatio;
-              if (mainImageWidth > contentWidth * 0.9) {
-                mainImageWidth = contentWidth * 0.9;
+              if (mainImageWidth > contentWidth * 0.95) {
+                mainImageWidth = contentWidth * 0.95;
                 mainImageHeight = mainImageWidth / mainImageRatio;
               }
               mainImageX = padding + (contentWidth - mainImageWidth) / 2;
               mainImageY = padding + (contentHeight - mainImageHeight) / 2;
-            }
-            ctx.drawImage(mainImage, mainImageX, mainImageY, mainImageWidth, mainImageHeight);
-
-            // 绘制二维码
-            if (qrCodeImage) {
-              const qrCodeSize = Math.min(contentWidth * 0.3, Math.min(qrCodeImage.width, qrCodeImage.height));
-              const qrCodeX = padding + contentWidth - spacing - qrCodeSize - 10;
-              const qrCodeY = padding + (contentHeight - qrCodeSize) / 2;
-              ctx.fillStyle = "white";
-              ctx.fillRect(qrCodeX - 5, qrCodeY - 5, qrCodeSize + 10, qrCodeSize + 10);
-              ctx.drawImage(qrCodeImage, qrCodeX, qrCodeY, qrCodeSize, qrCodeSize);
+              ctx.drawImage(mainImage, mainImageX, mainImageY, mainImageWidth, mainImageHeight);
             }
 
             // 绘制标题
@@ -1074,11 +1090,6 @@
                 ctx.shadowBlur = 0;
                 ctx.shadowOffsetX = 0;
                 ctx.shadowOffsetY = 0;
-            }
-
-            // 绘制水印
-            if (enableWatermarkInput.checked) {
-              drawWatermark();
             }
 
             // 创建预览项
@@ -1767,54 +1778,60 @@
         const watermarkSize = parseInt(watermarkSizeInput.value);
         const watermarkPosition = watermarkPositionSelect.value;
 
-        // 保存当前上下文状态
         ctx.save();
-
-        // 设置水印样式
         ctx.font = `${watermarkSize}px Arial`;
         ctx.fillStyle = hexToRgba(watermarkColor, watermarkOpacity);
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
 
-        // 计算水印位置，确保不会覆盖二维码
-        let x, y;
-        const padding = 20; // 边缘内边距
-        const textWidth = ctx.measureText(watermarkText).width;
-        const textHeight = watermarkSize;
+        if (watermarkPosition === 'tile') {
+          // 平铺水印
+          const textWidth = ctx.measureText(watermarkText).width;
+          const textHeight = watermarkSize;
+          const horizontalSpacing = textWidth * 2.5; // 水平间距
+          const verticalSpacing = textHeight * 8; // 垂直间距
 
-        // 根据选择的位置确定坐标
-        switch (watermarkPosition) {
-          case "bottom-right":
-            // 始终将水印放在右下角
-            x = canvas.width - textWidth - padding;
-            y = canvas.height - padding;
-            break;
-          case "bottom-left":
-            x = padding;
-            y = canvas.height - padding;
-            break;
-          case "top-right":
-            x = canvas.width - textWidth - padding;
-            y = padding + textHeight;
-            break;
-          case "top-left":
-            x = padding;
-            y = padding + textHeight;
-            break;
-          case "center":
-            x = (canvas.width - textWidth) / 2;
-            y = (canvas.height + textHeight) / 2;
-            break;
-          default:
-            x = padding;
-            y = canvas.height - padding;
+          ctx.translate(canvas.width / 2, canvas.height / 2);
+          ctx.rotate(-Math.PI / 6); // 旋转-30度
+          ctx.translate(-canvas.width / 2, -canvas.height / 2);
+
+          for (let y = -canvas.height; y < canvas.height * 2; y += verticalSpacing) {
+            for (let x = -canvas.width; x < canvas.width * 2; x += horizontalSpacing) {
+              ctx.fillText(watermarkText, x, y);
+            }
+          }
+        } else {
+          // 单个水印
+          let x, y;
+          const padding = 20; // 边缘内边距
+          const textWidth = ctx.measureText(watermarkText).width;
+          const textHeight = watermarkSize;
+
+          switch (watermarkPosition) {
+            case "bottom-right":
+              x = canvas.width - textWidth / 2 - padding;
+              y = canvas.height - textHeight / 2 - padding;
+              break;
+            case "bottom-left":
+              x = textWidth / 2 + padding;
+              y = canvas.height - textHeight / 2 - padding;
+              break;
+            case "top-right":
+              x = canvas.width - textWidth / 2 - padding;
+              y = textHeight / 2 + padding;
+              break;
+            case "top-left":
+              x = textWidth / 2 + padding;
+              y = textHeight / 2 + padding;
+              break;
+            case "center":
+              x = canvas.width / 2;
+              y = canvas.height / 2;
+              break;
+          }
+          ctx.fillText(watermarkText, x, y);
         }
 
-        // 设置文本基线
-        ctx.textBaseline = "bottom";
-
-        // 绘制水印
-        ctx.fillText(watermarkText, x, y);
-
-        // 恢复上下文状态
         ctx.restore();
       }
 
@@ -1876,7 +1893,7 @@
         watermarkOpacityValue.textContent = "30";
         watermarkSizeInput.value = "16";
         watermarkSizeValue.textContent = "16";
-        watermarkPositionSelect.value = "bottom-right";
+        watermarkPositionSelect.value = "tile";
 
         // 重置预览
         cardPreviewContainer.innerHTML = "";
