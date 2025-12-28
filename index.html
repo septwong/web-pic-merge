@@ -15,15 +15,15 @@
     -->
     <style>
       :root {
-        --primary-color: #07C160; /* 微信绿 */
-        --secondary-color: #10AEFF; /* 微信蓝 */
+        --primary-color: #07c160; /* 微信绿 */
+        --secondary-color: #10aeff; /* 微信蓝 */
         --light-color: #f8f9fa;
         --dark-color: #343a40;
-        --success-color: #07C160; /* 微信绿 */
-        --danger-color: #FA5151; /* 微信红 */
-        --warning-color: #FF9F0F; /* 微信橙 */
-        --bg-color1: #D9F7BE; /* 浅绿渐变 */
-        --bg-color2: #B5F5EC; /* 浅蓝渐变 */
+        --success-color: #07c160; /* 微信绿 */
+        --danger-color: #fa5151; /* 微信红 */
+        --warning-color: #ff9f0f; /* 微信橙 */
+        --bg-color1: #d9f7be; /* 浅绿渐变 */
+        --bg-color2: #b5f5ec; /* 浅蓝渐变 */
       }
 
       * {
@@ -252,16 +252,16 @@
 
       /* 模态框样式 */
       .modal {
-        display: none; 
-        position: fixed; 
-        z-index: 1001; 
-        padding-top: 60px; 
+        display: none;
+        position: fixed;
+        z-index: 1001;
+        padding-top: 60px;
         left: 0;
         top: 0;
-        width: 100%; 
-        height: 100%; 
-        overflow: auto; 
-        background-color: rgba(0,0,0,0.9);
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.9);
       }
 
       .modal-content {
@@ -289,24 +289,34 @@
         cursor: pointer;
       }
 
+      /* 预览卡片底部操作按钮容器（通过按钮自身定位模拟） */
       .preview-item .download-btn {
         position: absolute;
         bottom: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 5px 10px;
-        font-size: 0.8rem;
-        background-color: var(--primary-color);
-        color: white;
+        padding: 6px 12px;
+        font-size: 12px;
+        line-height: 1;
+        background: rgba(0, 0, 0, 0.65);
+        color: #fff;
         border: none;
-        border-radius: 4px;
+        border-radius: 999px; /* 胶囊按钮 */
         cursor: pointer;
-        opacity: 0.8;
-        transition: opacity 0.3s;
+        opacity: 1;
+        backdrop-filter: blur(6px);
+        transition: background 0.2s ease;
       }
 
-      .preview-item:hover .download-btn {
-        opacity: 1;
+      /* 下载按钮和复制按钮位置（右下角对齐，像系统组件） */
+      .preview-item .download-btn:first-of-type {
+        right: 64px;
+        left: auto;
+        transform: none;
+      }
+
+      .preview-item .download-btn:last-of-type {
+        right: 12px;
+        left: auto;
+        transform: none;
       }
 
       /* 预览区域的按钮组 */
@@ -458,6 +468,20 @@
         .preview-column {
           position: static;
         }
+        /* 复制按钮：主操作，视觉更突出 */
+        .preview-item .download-btn:last-of-type {
+          background: rgba(0, 0, 0, 0.8);
+          font-weight: 600;
+        }
+        /* 下载按钮：次操作，弱化一点 */
+        .preview-item .download-btn:first-of-type {
+          background: rgba(0, 0, 0, 0.45);
+        }
+        /* hover 反馈依然保留 */
+        .preview-item .download-btn:hover {
+          background: rgba(0, 0, 0, 0.9);
+          transform: translateY(-2px);
+        }
       }
     </style>
   </head>
@@ -480,13 +504,29 @@
 
               <div class="form-group">
                 <label for="mainImageUpload">上传多张主图片</label>
-                <input type="file" id="mainImageUpload" accept="image/*" multiple />
-                <div id="mainImagePreviewContainer" class="image-preview-container"></div>
+                <input
+                  type="file"
+                  id="mainImageUpload"
+                  accept="image/*"
+                  multiple
+                />
+                <div
+                  id="mainImagePreviewContainer"
+                  class="image-preview-container"
+                ></div>
               </div>
               <div class="form-group">
                 <label for="qrCodeImageUpload">上传多个二维码</label>
-                <input type="file" id="qrCodeImageUpload" accept="image/*" multiple />
-                <div id="qrCodeImagePreviewContainer" class="image-preview-container"></div>
+                <input
+                  type="file"
+                  id="qrCodeImageUpload"
+                  accept="image/*"
+                  multiple
+                />
+                <div
+                  id="qrCodeImagePreviewContainer"
+                  class="image-preview-container"
+                ></div>
               </div>
             </div>
 
@@ -754,7 +794,7 @@
 
       <div id="imageModal" class="modal">
         <span class="close-btn">&times;</span>
-        <img class="modal-content" id="modalImage">
+        <img class="modal-content" id="modalImage" />
       </div>
 
       <div class="loading">
@@ -770,9 +810,14 @@
     <script>
       // DOM元素
       const mainImageUploadInput = document.getElementById("mainImageUpload");
-      const qrCodeImageUploadInput = document.getElementById("qrCodeImageUpload");
-      const mainImagePreviewContainer = document.getElementById("mainImagePreviewContainer");
-      const qrCodeImagePreviewContainer = document.getElementById("qrCodeImagePreviewContainer");
+      const qrCodeImageUploadInput =
+        document.getElementById("qrCodeImageUpload");
+      const mainImagePreviewContainer = document.getElementById(
+        "mainImagePreviewContainer"
+      );
+      const qrCodeImagePreviewContainer = document.getElementById(
+        "qrCodeImagePreviewContainer"
+      );
       const cardTitleInput = document.getElementById("cardTitle");
       const fontFamilySelect = document.getElementById("fontFamily");
       const textColorInput = document.getElementById("textColor");
@@ -813,15 +858,17 @@
       const resetBtn = document.getElementById("resetBtn");
       const loadingDiv = document.querySelector(".loading");
       const toastDiv = document.getElementById("toast");
-      const cardPreviewContainer = document.getElementById("cardPreviewContainer");
+      const cardPreviewContainer = document.getElementById(
+        "cardPreviewContainer"
+      );
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
 
       // Helper function for natural sorting of filenames
       function naturalSortComparer(a, b) {
         // Extract numbers, default to 1 if not found (for cases like 'image.png')
-        const numA = parseInt(a.name.match(/\d+/)?.[0] || '1');
-        const numB = parseInt(b.name.match(/\d+/)?.[0] || '1');
+        const numA = parseInt(a.name.match(/\d+/)?.[0] || "1");
+        const numB = parseInt(b.name.match(/\d+/)?.[0] || "1");
 
         // If numbers are different, sort by number
         if (numA !== numB) {
@@ -847,7 +894,7 @@
 
       function updatePreview(container, files) {
         container.innerHTML = ""; // 清空现有预览
-        files.forEach(file => {
+        files.forEach((file) => {
           const reader = new FileReader();
           reader.onload = (e) => {
             const img = document.createElement("img");
@@ -914,7 +961,7 @@
       });
 
       // 下载卡片
-      downloadBtn.style.display = 'none'; // 隐藏全局下载按钮
+      downloadBtn.style.display = "none"; // 隐藏全局下载按钮
 
       // 重置表单
       resetBtn.addEventListener("click", resetForm);
@@ -968,15 +1015,22 @@
         cardPreviewContainer.innerHTML = ""; // 清空预览
         downloadBtn.disabled = true;
 
-        const pairings = Math.min(mainImageFiles.length, qrCodeImageFiles.length);
+        const pairings = Math.min(
+          mainImageFiles.length,
+          qrCodeImageFiles.length
+        );
 
         try {
           for (let i = 0; i < mainImageFiles.length; i++) {
             const mainImageFile = mainImageFiles[i];
             const qrCodeFile = i < pairings ? qrCodeImageFiles[i] : null;
 
-            const mainImage = await loadImageAsync(URL.createObjectURL(mainImageFile));
-            const qrCodeImage = qrCodeFile ? await loadImageAsync(URL.createObjectURL(qrCodeFile)) : null;
+            const mainImage = await loadImageAsync(
+              URL.createObjectURL(mainImageFile)
+            );
+            const qrCodeImage = qrCodeFile
+              ? await loadImageAsync(URL.createObjectURL(qrCodeFile))
+              : null;
 
             // 设置画布尺寸
             const cardWidth = 900;
@@ -1022,18 +1076,38 @@
 
               mainImageX = padding + spacing;
               mainImageY = padding + (contentHeight - mainImageHeight) / 2;
-              
-              ctx.drawImage(mainImage, mainImageX, mainImageY, mainImageWidth, mainImageHeight);
+
+              ctx.drawImage(
+                mainImage,
+                mainImageX,
+                mainImageY,
+                mainImageWidth,
+                mainImageHeight
+              );
 
               // 绘制二维码
-              const finalQrCodeSize = Math.min(qrCodeSize, qrCodeImage.width, qrCodeImage.height);
+              const finalQrCodeSize = Math.min(
+                qrCodeSize,
+                qrCodeImage.width,
+                qrCodeImage.height
+              );
               const qrCodeX = cardWidth - padding - spacing - finalQrCodeSize;
               const qrCodeY = padding + (contentHeight - finalQrCodeSize) / 2;
-              
-              ctx.fillStyle = "white";
-              ctx.fillRect(qrCodeX - 5, qrCodeY - 5, finalQrCodeSize + 10, finalQrCodeSize + 10);
-              ctx.drawImage(qrCodeImage, qrCodeX, qrCodeY, finalQrCodeSize, finalQrCodeSize);
 
+              ctx.fillStyle = "white";
+              ctx.fillRect(
+                qrCodeX - 5,
+                qrCodeY - 5,
+                finalQrCodeSize + 10,
+                finalQrCodeSize + 10
+              );
+              ctx.drawImage(
+                qrCodeImage,
+                qrCodeX,
+                qrCodeY,
+                finalQrCodeSize,
+                finalQrCodeSize
+              );
             } else {
               // No QR code, center the main image
               mainImageHeight = contentHeight * 0.95;
@@ -1044,52 +1118,72 @@
               }
               mainImageX = padding + (contentWidth - mainImageWidth) / 2;
               mainImageY = padding + (contentHeight - mainImageHeight) / 2;
-              ctx.drawImage(mainImage, mainImageX, mainImageY, mainImageWidth, mainImageHeight);
+              ctx.drawImage(
+                mainImage,
+                mainImageX,
+                mainImageY,
+                mainImageWidth,
+                mainImageHeight
+              );
             }
 
             // 绘制标题
             if (cardTitleInput.value.trim()) {
-                const text = cardTitleInput.value.trim();
-                const fontSize = parseInt(textSizeInput.value);
-                const fontFamily = fontFamilySelect.value;
-                const textColor = textColorInput.value;
-                const textShadow = parseInt(textShadowInput.value);
+              const text = cardTitleInput.value.trim();
+              const fontSize = parseInt(textSizeInput.value);
+              const fontFamily = fontFamilySelect.value;
+              const textColor = textColorInput.value;
+              const textShadow = parseInt(textShadowInput.value);
 
-                ctx.font = `bold ${fontSize}px ${fontFamily}`;
-                ctx.textAlign = "center";
-                ctx.textBaseline = "top";
+              ctx.font = `bold ${fontSize}px ${fontFamily}`;
+              ctx.textAlign = "center";
+              ctx.textBaseline = "top";
 
-                if (textShadow > 0) {
-                    ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
-                    ctx.shadowBlur = textShadow;
-                    ctx.shadowOffsetX = textShadow / 2;
-                    ctx.shadowOffsetY = textShadow / 2;
-                }
+              if (textShadow > 0) {
+                ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+                ctx.shadowBlur = textShadow;
+                ctx.shadowOffsetX = textShadow / 2;
+                ctx.shadowOffsetY = textShadow / 2;
+              }
 
-                const lines = wrapTextImproved(ctx, text, contentWidth - 60, fontSize);
-                const lineHeight = fontSize * 1.3;
-                const totalTextHeight = lines.length * lineHeight;
-                const textX = cardWidth / 2;
-                let textY = padding + 15;
+              const lines = wrapTextImproved(
+                ctx,
+                text,
+                contentWidth - 60,
+                fontSize
+              );
+              const lineHeight = fontSize * 1.3;
+              const totalTextHeight = lines.length * lineHeight;
+              const textX = cardWidth / 2;
+              let textY = padding + 15;
 
-                const textBgPadding = 10;
-                const textBgWidth = contentWidth - 40;
-                const textBgHeight = totalTextHeight + textBgPadding * 2;
-                const textBgX = (cardWidth - textBgWidth) / 2;
-                const textBgY = textY - textBgPadding;
+              const textBgPadding = 10;
+              const textBgWidth = contentWidth - 40;
+              const textBgHeight = totalTextHeight + textBgPadding * 2;
+              const textBgX = (cardWidth - textBgWidth) / 2;
+              const textBgY = textY - textBgPadding;
 
-                ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
-                roundRect(ctx, textBgX, textBgY, textBgWidth, textBgHeight, 5, true, false);
+              ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+              roundRect(
+                ctx,
+                textBgX,
+                textBgY,
+                textBgWidth,
+                textBgHeight,
+                5,
+                true,
+                false
+              );
 
-                ctx.fillStyle = textColor;
-                for (let j = 0; j < lines.length; j++) {
-                    ctx.fillText(lines[j], textX, textY + j * lineHeight);
-                }
+              ctx.fillStyle = textColor;
+              for (let j = 0; j < lines.length; j++) {
+                ctx.fillText(lines[j], textX, textY + j * lineHeight);
+              }
 
-                ctx.shadowColor = "transparent";
-                ctx.shadowBlur = 0;
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 0;
+              ctx.shadowColor = "transparent";
+              ctx.shadowBlur = 0;
+              ctx.shadowOffsetX = 0;
+              ctx.shadowOffsetY = 0;
             }
 
             // 创建预览项
@@ -1105,15 +1199,37 @@
             downloadButton.textContent = "下载";
             downloadButton.classList.add("download-btn");
             downloadButton.onclick = () => {
-                const link = document.createElement("a");
-                const mainImageName = mainImageFile.name.split('.').slice(0, -1).join('.');
-                link.download = `${mainImageName}_card.png`;
-                link.href = dataUrl;
-                link.click();
+              const link = document.createElement("a");
+              const mainImageName = mainImageFile.name
+                .split(".")
+                .slice(0, -1)
+                .join(".");
+              link.download = `${mainImageName}_card.png`;
+              link.href = dataUrl;
+              link.click();
+            };
+
+            const copyButton = document.createElement("button");
+            copyButton.textContent = "复制";
+            copyButton.classList.add("download-btn");
+
+            copyButton.onclick = async () => {
+              try {
+                const response = await fetch(dataUrl);
+                const blob = await response.blob();
+                await navigator.clipboard.write([
+                  new ClipboardItem({ [blob.type]: blob }),
+                ]);
+                showMessage("图片已复制到剪贴板", "success");
+              } catch (err) {
+                console.error("复制图片失败:", err);
+                showMessage("复制失败，请使用下载方式", "error");
+              }
             };
 
             previewItem.appendChild(img);
             previewItem.appendChild(downloadButton);
+            previewItem.appendChild(copyButton);
             cardPreviewContainer.appendChild(previewItem);
           }
 
@@ -1193,9 +1309,19 @@
           }
 
           // 确保渐变坐标是有限的数字
-          if (!isFinite(x0) || !isFinite(y0) || !isFinite(x1) || !isFinite(y1)) {
-            console.warn("Gradient coordinates are non-finite, using fallback.");
-            x0 = 0; y0 = 0; x1 = canvas.width; y1 = canvas.height; // Fallback to a safe gradient
+          if (
+            !isFinite(x0) ||
+            !isFinite(y0) ||
+            !isFinite(x1) ||
+            !isFinite(y1)
+          ) {
+            console.warn(
+              "Gradient coordinates are non-finite, using fallback."
+            );
+            x0 = 0;
+            y0 = 0;
+            x1 = canvas.width;
+            y1 = canvas.height; // Fallback to a safe gradient
           }
 
           gradient = ctx.createLinearGradient(x0, y0, x1, y1);
@@ -1383,114 +1509,190 @@
         // 预定义的美观色调范围，参考微信蓝、微信绿、暖色调等
         const presetGradients = [
           // 微信蓝 (接近)
-          { h1: [200, 220], s1: [70, 90], l1: [50, 70], h2: [200, 220], s2: [50, 70], l2: [70, 90] },
+          {
+            h1: [200, 220],
+            s1: [70, 90],
+            l1: [50, 70],
+            h2: [200, 220],
+            s2: [50, 70],
+            l2: [70, 90],
+          },
           // 微信绿 (接近)
-          { h1: [140, 160], s1: [70, 90], l1: [40, 60], h2: [140, 160], s2: [50, 70], l2: [60, 80] },
+          {
+            h1: [140, 160],
+            s1: [70, 90],
+            l1: [40, 60],
+            h2: [140, 160],
+            s2: [50, 70],
+            l2: [60, 80],
+          },
           // 暖色调 (接近)
-          { h1: [30, 50], s1: [80, 100], l1: [50, 70], h2: [10, 30], s2: [70, 90], l2: [60, 80] },
+          {
+            h1: [30, 50],
+            s1: [80, 100],
+            l1: [50, 70],
+            h2: [10, 30],
+            s2: [70, 90],
+            l2: [60, 80],
+          },
           // 柔和蓝紫
-          { h1: [240, 260], s1: [50, 70], l1: [60, 80], h2: [270, 290], s2: [40, 60], l2: [70, 90] },
+          {
+            h1: [240, 260],
+            s1: [50, 70],
+            l1: [60, 80],
+            h2: [270, 290],
+            s2: [40, 60],
+            l2: [70, 90],
+          },
           // 清新绿黄
-          { h1: [80, 100], s1: [60, 80], l1: [50, 70], h2: [60, 80], s2: [50, 70], l2: [60, 80] },
+          {
+            h1: [80, 100],
+            s1: [60, 80],
+            l1: [50, 70],
+            h2: [60, 80],
+            s2: [50, 70],
+            l2: [60, 80],
+          },
           // 活力橙红
-          { h1: [0, 20], s1: [80, 100], l1: [50, 70], h2: [330, 350], s2: [70, 90], l2: [60, 80] }
+          {
+            h1: [0, 20],
+            s1: [80, 100],
+            l1: [50, 70],
+            h2: [330, 350],
+            s2: [70, 90],
+            l2: [60, 80],
+          },
         ];
-        
+
         // 随机选择一个预设渐变
-        const selectedPreset = presetGradients[Math.floor(Math.random() * presetGradients.length)];
-        
+        const selectedPreset =
+          presetGradients[Math.floor(Math.random() * presetGradients.length)];
+
         // 在选定的范围内生成随机色调、饱和度和亮度
-        const hue1 = Math.floor(Math.random() * (selectedPreset.h1[1] - selectedPreset.h1[0])) + selectedPreset.h1[0];
-        const saturation1 = Math.floor(Math.random() * (selectedPreset.s1[1] - selectedPreset.s1[0])) + selectedPreset.s1[0];
-        const lightness1 = Math.floor(Math.random() * (selectedPreset.l1[1] - selectedPreset.l1[0])) + selectedPreset.l1[0];
-        
-        const hue2 = Math.floor(Math.random() * (selectedPreset.h2[1] - selectedPreset.h2[0])) + selectedPreset.h2[0];
-        const saturation2 = Math.floor(Math.random() * (selectedPreset.s2[1] - selectedPreset.s2[0])) + selectedPreset.s2[0];
-        const lightness2 = Math.floor(Math.random() * (selectedPreset.l2[1] - selectedPreset.l2[0])) + selectedPreset.l2[0];
-        
+        const hue1 =
+          Math.floor(
+            Math.random() * (selectedPreset.h1[1] - selectedPreset.h1[0])
+          ) + selectedPreset.h1[0];
+        const saturation1 =
+          Math.floor(
+            Math.random() * (selectedPreset.s1[1] - selectedPreset.s1[0])
+          ) + selectedPreset.s1[0];
+        const lightness1 =
+          Math.floor(
+            Math.random() * (selectedPreset.l1[1] - selectedPreset.l1[0])
+          ) + selectedPreset.l1[0];
+
+        const hue2 =
+          Math.floor(
+            Math.random() * (selectedPreset.h2[1] - selectedPreset.h2[0])
+          ) + selectedPreset.h2[0];
+        const saturation2 =
+          Math.floor(
+            Math.random() * (selectedPreset.s2[1] - selectedPreset.s2[0])
+          ) + selectedPreset.s2[0];
+        const lightness2 =
+          Math.floor(
+            Math.random() * (selectedPreset.l2[1] - selectedPreset.l2[0])
+          ) + selectedPreset.l2[0];
+
         // 将HSL转换为RGB，然后转换为十六进制颜色代码
         const color1 = hslToHex(hue1, saturation1, lightness1);
         const color2 = hslToHex(hue2, saturation2, lightness2);
-        
+
         return {
           primary: color1,
-          secondary: color2
+          secondary: color2,
         };
       }
-      
+
       // HSL颜色转换为十六进制颜色代码
       function hslToHex(h, s, l) {
         // 将饱和度和亮度转换为0-1范围
         s /= 100;
         l /= 100;
-        
+
         const c = (1 - Math.abs(2 * l - 1)) * s;
-        const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+        const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
         const m = l - c / 2;
-        
+
         let r, g, b;
-        
+
         if (h >= 0 && h < 60) {
-          r = c; g = x; b = 0;
+          r = c;
+          g = x;
+          b = 0;
         } else if (h >= 60 && h < 120) {
-          r = x; g = c; b = 0;
+          r = x;
+          g = c;
+          b = 0;
         } else if (h >= 120 && h < 180) {
-          r = 0; g = c; b = x;
+          r = 0;
+          g = c;
+          b = x;
         } else if (h >= 180 && h < 240) {
-          r = 0; g = x; b = c;
+          r = 0;
+          g = x;
+          b = c;
         } else if (h >= 240 && h < 300) {
-          r = x; g = 0; b = c;
+          r = x;
+          g = 0;
+          b = c;
         } else {
-          r = c; g = 0; b = x;
+          r = c;
+          g = 0;
+          b = x;
         }
-        
+
         // 将RGB值转换为0-255范围，然后转换为十六进制
         r = Math.round((r + m) * 255);
         g = Math.round((g + m) * 255);
         b = Math.round((b + m) * 255);
-        
+
         // 转换为十六进制颜色代码
-        return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+        return `#${r.toString(16).padStart(2, "0")}${g
+          .toString(16)
+          .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
       }
-      
+
       // 提取图片主体颜色函数 - 选择最鲜亮的颜色，排除黑色和白色
       function extractDominantColors(image) {
         // 创建一个临时画布来分析图片颜色
-        const tempCanvas = document.createElement('canvas');
-        const tempCtx = tempCanvas.getContext('2d');
-        
+        const tempCanvas = document.createElement("canvas");
+        const tempCtx = tempCanvas.getContext("2d");
+
         // 设置较小的尺寸以提高性能
         const size = 100; // 增加尺寸以获取更多颜色样本
         tempCanvas.width = size;
         tempCanvas.height = size;
-        
+
         // 在临时画布上绘制图片
         tempCtx.drawImage(image, 0, 0, size, size);
-        
+
         // 获取图片数据
         const imageData = tempCtx.getImageData(0, 0, size, size).data;
-        
+
         // 用于存储颜色信息
         const colorInfo = [];
-        
+
         // 分析每个像素
         for (let i = 0; i < imageData.length; i += 4) {
           const r = imageData[i];
           const g = imageData[i + 1];
           const b = imageData[i + 2];
           const a = imageData[i + 3];
-          
+
           // 忽略透明像素
           if (a < 128) continue;
-          
+
           // 将RGB值量化为更少的颜色，以便更好地分组
           const quantizedR = Math.round(r / 24) * 24;
           const quantizedG = Math.round(g / 24) * 24;
           const quantizedB = Math.round(b / 24) * 24;
-          
+
           // 计算颜色的亮度 (0-255)
-          const brightness = (quantizedR * 299 + quantizedG * 587 + quantizedB * 114) / 1000;
-          
+          const brightness =
+            (quantizedR * 299 + quantizedG * 587 + quantizedB * 114) / 1000;
+
           // 计算颜色的饱和度 (0-1)
           const max = Math.max(quantizedR, quantizedG, quantizedB);
           const min = Math.min(quantizedR, quantizedG, quantizedB);
@@ -1498,21 +1700,21 @@
           if (max !== 0) {
             saturation = (max - min) / max;
           }
-          
+
           // 计算颜色的鲜艳度 (饱和度 * 亮度的适中值)
           // 亮度太低或太高的颜色都不够鲜艳
           const brightnessWeight = 1 - Math.abs((brightness - 128) / 128);
           const vividness = saturation * brightnessWeight;
-          
+
           // 排除接近黑色和白色的颜色
           // 黑色: 亮度很低
           // 白色: 亮度很高且饱和度很低
           const isBlack = brightness < 40;
           const isWhite = brightness > 200 && saturation < 0.2;
-          
+
           if (!isBlack && !isWhite) {
             const colorKey = `${quantizedR},${quantizedG},${quantizedB}`;
-            
+
             // 存储颜色信息，包括RGB值、鲜艳度和出现次数
             colorInfo.push({
               key: colorKey,
@@ -1520,21 +1722,21 @@
               g: quantizedG,
               b: quantizedB,
               vividness: vividness,
-              count: 1
+              count: 1,
             });
           }
         }
-        
+
         // 合并相同颜色并计算总数
         const colorMap = {};
-        colorInfo.forEach(info => {
+        colorInfo.forEach((info) => {
           if (colorMap[info.key]) {
             colorMap[info.key].count += info.count;
           } else {
             colorMap[info.key] = info;
           }
         });
-        
+
         // 将颜色转换为数组并排序
         // 首先按鲜艳度排序，然后按出现次数排序
         const sortedColors = Object.values(colorMap).sort((a, b) => {
@@ -1543,55 +1745,73 @@
           const bScore = b.vividness * 0.7 + (b.count / colorInfo.length) * 0.3;
           return bScore - aScore;
         });
-        
+
         // 如果没有找到合适的颜色，返回默认颜色
         if (sortedColors.length === 0) {
           return {
-            primary: '#D5E7FB',
-            secondary: '#9EBEFA'
+            primary: "#D5E7FB",
+            secondary: "#9EBEFA",
           };
         }
-        
+
         // 获取最鲜艳的颜色作为主色调
-        const primaryColor = `#${sortedColors[0].r.toString(16).padStart(2, '0')}${sortedColors[0].g.toString(16).padStart(2, '0')}${sortedColors[0].b.toString(16).padStart(2, '0')}`;
-        
+        const primaryColor = `#${sortedColors[0].r
+          .toString(16)
+          .padStart(2, "0")}${sortedColors[0].g
+          .toString(16)
+          .padStart(2, "0")}${sortedColors[0].b.toString(16).padStart(2, "0")}`;
+
         // 生成次要颜色 - 可以是主色调的互补色或变体
         let secondaryColor;
-        
+
         // 判断主色调的亮度
-        const primaryBrightness = (sortedColors[0].r * 299 + sortedColors[0].g * 587 + sortedColors[0].b * 114) / 1000;
-        
+        const primaryBrightness =
+          (sortedColors[0].r * 299 +
+            sortedColors[0].g * 587 +
+            sortedColors[0].b * 114) /
+          1000;
+
         if (primaryBrightness > 128) {
           // 如果主色调较亮，生成较暗的次要颜色
           const darkerR = Math.max(0, sortedColors[0].r - 60);
           const darkerG = Math.max(0, sortedColors[0].g - 60);
           const darkerB = Math.max(0, sortedColors[0].b - 60);
-          secondaryColor = `#${darkerR.toString(16).padStart(2, '0')}${darkerG.toString(16).padStart(2, '0')}${darkerB.toString(16).padStart(2, '0')}`;
+          secondaryColor = `#${darkerR.toString(16).padStart(2, "0")}${darkerG
+            .toString(16)
+            .padStart(2, "0")}${darkerB.toString(16).padStart(2, "0")}`;
         } else {
           // 如果主色调较暗，生成较亮的次要颜色
           const lighterR = Math.min(255, sortedColors[0].r + 60);
           const lighterG = Math.min(255, sortedColors[0].g + 60);
           const lighterB = Math.min(255, sortedColors[0].b + 60);
-          secondaryColor = `#${lighterR.toString(16).padStart(2, '0')}${lighterG.toString(16).padStart(2, '0')}${lighterB.toString(16).padStart(2, '0')}`;
+          secondaryColor = `#${lighterR.toString(16).padStart(2, "0")}${lighterG
+            .toString(16)
+            .padStart(2, "0")}${lighterB.toString(16).padStart(2, "0")}`;
         }
-        
+
         return {
           primary: primaryColor,
-          secondary: secondaryColor
+          secondary: secondaryColor,
         };
       }
-      
+
       // 随机渐变按钮事件监听器
       const randomGradientBtn = document.getElementById("randomGradientBtn");
-      randomGradientBtn.addEventListener("click", function() {
+      randomGradientBtn.addEventListener("click", function () {
         const randomColors = generateRandomGradientColors();
         bgColor1Input.value = randomColors.primary;
         bgColor1Value.textContent = randomColors.primary;
         bgColor2Input.value = randomColors.secondary;
         bgColor2Value.textContent = randomColors.secondary;
 
-        const directions = ["to right", "to bottom", "to right bottom", "to left bottom"];
-        const randomDirection = directions[Math.floor(Math.random() * directions.length)];
+        const directions = [
+          "to right",
+          "to bottom",
+          "to right bottom",
+          "to left bottom",
+        ];
+        const randomDirection =
+          directions[Math.floor(Math.random() * directions.length)];
         gradientTypeSelect.value = randomDirection;
 
         const radius = Math.floor(Math.random() * 16); // 0-15的圆角
@@ -1617,21 +1837,27 @@
             bgColor1Value.textContent = randomColors.primary;
             bgColor2Input.value = randomColors.secondary;
             bgColor2Value.textContent = randomColors.secondary;
-            
+
             // 随机选择渐变方向
-            const directions = ["to right", "to bottom", "to right bottom", "to left bottom"];
-            const randomDirection = directions[Math.floor(Math.random() * directions.length)];
+            const directions = [
+              "to right",
+              "to bottom",
+              "to right bottom",
+              "to left bottom",
+            ];
+            const randomDirection =
+              directions[Math.floor(Math.random() * directions.length)];
             gradientTypeSelect.value = randomDirection;
-            
+
             // 随机设置圆角和阴影
             const radius = Math.floor(Math.random() * 16); // 0-15的圆角
             cardRadiusInput.value = radius.toString();
             cardRadiusValue.textContent = radius.toString();
-            
+
             const shadow = 3 + Math.floor(Math.random() * 8); // 3-10的阴影
             cardShadowInput.value = shadow.toString();
             cardShadowValue.textContent = shadow.toString();
-            
+
             showMessage("已生成随机美观渐变背景", "success");
             break;
           case "auto":
@@ -1639,45 +1865,48 @@
             if (mainImageInput.files && mainImageInput.files.length > 0) {
               // 显示加载指示器
               loadingDiv.classList.add("show");
-              
+
               // 加载图片并提取颜色
               const img = new Image();
-              img.onload = function() {
+              img.onload = function () {
                 // 提取主体颜色
                 const colors = extractDominantColors(img);
-                
+
                 // 应用提取的颜色
                 bgColor1Input.value = colors.primary;
                 bgColor1Value.textContent = colors.primary;
                 bgColor2Input.value = colors.secondary;
                 bgColor2Value.textContent = colors.secondary;
-                
+
                 // 设置渐变方向 - 对角线通常效果较好
                 gradientTypeSelect.value = "to right bottom";
-                
+
                 // 隐藏加载指示器
                 loadingDiv.classList.remove("show");
-                
-                showMessage("已根据图片最鲜艳的颜色自动设置背景渐变", "success");
+
+                showMessage(
+                  "已根据图片最鲜艳的颜色自动设置背景渐变",
+                  "success"
+                );
               };
-              
-              img.onerror = function() {
+
+              img.onerror = function () {
                 // 加载失败时使用默认颜色
                 bgColor1Input.value = "#D5E7FB";
                 bgColor1Value.textContent = "#D5E7FB";
                 bgColor2Input.value = "#9EBEFA";
                 bgColor2Value.textContent = "#9EBEFA";
-                
+
                 loadingDiv.classList.remove("show");
                 showMessage("无法分析图片颜色，已使用默认颜色", "error");
               };
-              
+
               img.src = URL.createObjectURL(mainImageInput.files[0]);
             } else {
               showMessage("请先上传主图片，再使用自动颜色功能", "error");
               // 重置为默认样式
               stylePresetSelect.value = "default";
-              
+
               // 应用默认样式
               bgColor1Input.value = "#D5E7FB";
               bgColor1Value.textContent = "#D5E7FB";
@@ -1784,7 +2013,7 @@
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
 
-        if (watermarkPosition === 'tile') {
+        if (watermarkPosition === "tile") {
           // 平铺水印
           const textWidth = ctx.measureText(watermarkText).width;
           const textHeight = watermarkSize;
@@ -1795,8 +2024,16 @@
           ctx.rotate(-Math.PI / 6); // 旋转-30度
           ctx.translate(-canvas.width / 2, -canvas.height / 2);
 
-          for (let y = -canvas.height; y < canvas.height * 2; y += verticalSpacing) {
-            for (let x = -canvas.width; x < canvas.width * 2; x += horizontalSpacing) {
+          for (
+            let y = -canvas.height;
+            y < canvas.height * 2;
+            y += verticalSpacing
+          ) {
+            for (
+              let x = -canvas.width;
+              x < canvas.width * 2;
+              x += horizontalSpacing
+            ) {
               ctx.fillText(watermarkText, x, y);
             }
           }
@@ -1844,14 +2081,14 @@
       }
 
       // 页面加载完成后初始化
-      document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener("DOMContentLoaded", function () {
         // 触发样式预设的change事件，应用随机样式
-        const event = new Event('change');
+        const event = new Event("change");
         stylePresetSelect.dispatchEvent(event);
         // 页面加载时调用resetForm，确保图片预览隐藏
         resetForm();
       });
-      
+
       // 重置表单
       function resetForm() {
         // 重置文件输入
@@ -1872,15 +2109,21 @@
         textShadowInput.value = "0";
         textShadowValue.textContent = "0";
         stylePresetSelect.value = "random";
-        
+
         // 重新生成随机样式
         const randomColors = generateRandomGradientColors();
         bgColor1Input.value = randomColors.primary;
         bgColor1Value.textContent = randomColors.primary;
         bgColor2Input.value = randomColors.secondary;
         bgColor2Value.textContent = randomColors.secondary;
-        const directions = ["to right", "to bottom", "to right bottom", "to left bottom"];
-        gradientTypeSelect.value = directions[Math.floor(Math.random() * directions.length)];
+        const directions = [
+          "to right",
+          "to bottom",
+          "to right bottom",
+          "to left bottom",
+        ];
+        gradientTypeSelect.value =
+          directions[Math.floor(Math.random() * directions.length)];
         cardRadiusInput.value = Math.floor(Math.random() * 16).toString();
         cardShadowInput.value = (3 + Math.floor(Math.random() * 8)).toString();
 
@@ -1915,15 +2158,15 @@
         modalImg.src = src;
       }
 
-      closeBtn.onclick = function() {
+      closeBtn.onclick = function () {
         modal.style.display = "none";
-      }
+      };
 
-      window.onclick = function(event) {
+      window.onclick = function (event) {
         if (event.target == modal) {
           modal.style.display = "none";
         }
-      }
+      };
     </script>
   </body>
 </html>
