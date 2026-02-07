@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:www.icloud.com)"
+      "WebFetch(domain:www.icloud.com)",
+      "Bash(open /Users/wong/work/GitHub/web-pic-merge/index.html)",
+      "Bash(python3 -c \"\nimport re\ntry:\n    with open\\(''/Users/wong/work/GitHub/web-pic-merge/index.html'', ''r'', encoding=''utf-8''\\) as f:\n        content = f.read\\(\\)\n    print\\(''HTML文件读取成功''\\)\n    print\\(f''文件长度: {len\\(content\\)} 字符''\\)\n    print\\(f''开头: {content[:100]}...''\\)\n    print\\(''''\\)\n    # 检查基本HTML结构\n    if ''<!DOCTYPE html>'' in content:\n        print\\(''✓ DOCTYPE 存在''\\)\n    if ''<html'' in content and ''</html>'' in content:\n        print\\(''✓ HTML标签成对''\\)\n    if ''<head>'' in content and ''</head>'' in content:\n        print\\(''✓ HEAD标签成对''\\)\n    if ''<body>'' in content and ''</body>'' in content:\n        print\\(''✓ BODY标签成对''\\)\n    if ''<script>'' in content and ''</script>'' in content:\n        print\\(''✓ SCRIPT标签成对''\\)\n        \n    # 检查具体功能\n    if ''main-tab-btn'' in content:\n        print\\(''✓ 主tab按钮存在''\\)\n    if ''main-tab-content'' in content:\n        print\\(''✓ 主tab内容存在''\\)\n    if ''iPhone套壳'' in content:\n        print\\(''✓ iPhone套壳文本存在''\\)\n        \nexcept Exception as e:\n    print\\(f''错误: {e}''\\)\n\")"
     ]
   }
 }

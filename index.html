@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>图片卡片生成器</title>
+    <title>卡片生成器</title>
     <!-- 使用SVG作为现代浏览器的favicon -->
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <!-- 为了兼容旧浏览器，可以使用以下工具将SVG转换为ICO或PNG: https://convertio.co/svg-ico/ -->
@@ -90,6 +90,49 @@
         gap: 20px;
       }
 
+      /* 主功能Tabs样式 */
+      .main-tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 3px solid #e0e0e0;
+        margin-bottom: 30px;
+      }
+
+      .main-tab-btn {
+        flex: 1;
+        padding: 16px 20px;
+        background: none;
+        border: none;
+        font-size: 16px;
+        font-weight: 600;
+        color: #666;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.3s ease;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -3px;
+      }
+
+      .main-tab-btn:hover {
+        color: var(--primary-color);
+        background-color: rgba(74, 144, 226, 0.05);
+      }
+
+      .main-tab-btn.active {
+        color: var(--primary-color);
+        border-bottom-color: var(--primary-color);
+        background-color: rgba(74, 144, 226, 0.08);
+      }
+
+      /* 主Tab内容区域 */
+      .main-tab-content {
+        display: none;
+      }
+
+      .main-tab-content.active {
+        display: block;
+      }
+
       .panel {
         background-color: #fff;
         border-radius: 8px;
@@ -153,6 +196,11 @@
         display: flex;
         align-items: center;
         gap: 10px;
+      }
+
+      .color-picker input[type="range"] {
+        flex: 1;
+        min-width: 100px;
       }
 
       .slider-container {
@@ -485,6 +533,144 @@
         border-radius: 4px;
       }
 
+      .preview-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .card-preview-item {
+        position: relative;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 8px;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+      }
+
+      .card-preview-item:hover {
+        border-color: #4a90e2;
+        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.15);
+        transform: translateY(-2px);
+      }
+
+      .card-btn-group {
+        display: flex;
+        gap: 5px;
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+      }
+
+      .card-image {
+        max-width: 100%;
+        max-height: 300px;
+        display: block;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .border-preview-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        margin-top: 10px;
+      }
+
+      #iphoneBorderImage {
+        max-width: 100%;
+        max-height: 200px;
+        object-fit: contain;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+
+      #iphoneBorderImage:hover {
+        transform: scale(1.05);
+      }
+
+      .border-info {
+        font-size: 14px;
+        color: #666;
+        margin-top: 10px;
+        margin-bottom: 0;
+      }
+
+      .bg-type-btn-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .bg-type-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 16px;
+        background: #f8f9fa;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 14px;
+        font-weight: 500;
+        color: #666;
+        gap: 6px;
+      }
+
+      .bg-type-btn:hover {
+        background: #f0f2f5;
+        border-color: #4a90e2;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(74, 144, 226, 0.15);
+      }
+
+      .bg-type-btn.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-color: #667eea;
+        color: white;
+        box-shadow: 0 2px 10px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-icon {
+        font-size: 18px;
+      }
+
+      .bg-settings {
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+      }
+
+      #iphoneBgGradientPreset {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      .btn-small {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+      }
+
+      .btn-secondary {
+        background-color: #6c757d;
+      }
+
       .font-option {
         padding: 5px;
         font-family: inherit;
@@ -750,10 +936,18 @@
           src="logo.svg"
           alt="网站Logo"
           style="height: 36px; vertical-align: middle; margin-right: 10px"
-        />图片卡片生成器
+        />卡片生成器
       </h1>
 
-      <div class="main-content">
+      <!-- 主要功能Tabs -->
+      <div class="main-tabs">
+        <button class="main-tab-btn active" data-main-tab="card">卡片生成</button>
+        <button class="main-tab-btn" data-main-tab="iphone">iPhone套壳</button>
+      </div>
+
+      <!-- 卡片生成Tab内容 -->
+      <div class="main-tab-content active" id="main-tab-card">
+        <div class="main-content">
         <!-- 左侧设置区域 -->
         <div class="settings-column">
           <div class="panels">
@@ -797,7 +991,6 @@
                 <button class="tab-btn active" data-tab="style">样式</button>
                 <button class="tab-btn" data-tab="text">文字</button>
                 <button class="tab-btn" data-tab="watermark">水印</button>
-                <button class="tab-btn" data-tab="iphone">iPhone套壳</button>
               </div>
 
               <!-- 样式设置 Tab -->
@@ -967,30 +1160,6 @@
                 </div>
               </div>
 
-              <!-- iPhone 套壳设置 Tab -->
-              <div class="tab-content" id="tab-iphone">
-                <div class="form-group watermark-toggle">
-                  <input type="checkbox" id="enableIPhoneMockup" checked />
-                  <label for="enableIPhoneMockup">启用 iPhone 15 Pro Max 套壳</label>
-                </div>
-
-                <div class="iphone-color-group">
-                  <div class="form-group" style="display:none">
-                    <label for="iphoneColor">手机边框颜色</label>
-                    <select id="iphoneColor">
-                      <option value="natural">原色钛金属</option>
-                      <option value="black">黑色钛金属</option>
-                      <option value="white">白色钛金属</option>
-                      <option value="desert">沙漠色钛金属</option>
-                    </select>
-                  </div>
-
-                  <div class="form-group">
-                    <label>手机边框</label>
-                    <div style="font-size: 12px; color: #888;">使用真实 iPhone 15 Pro Max 钛金属边框</div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -1010,6 +1179,124 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- iPhone套壳Tab内容 -->
+    <div class="main-tab-content" id="main-tab-iphone">
+      <div class="main-content">
+        <!-- 左侧设置区域 -->
+        <div class="settings-column">
+          <div class="panels">
+            <div class="panel">
+              <h2 class="panel-title">上传图片</h2>
+              <div class="form-group">
+                <label for="iphoneMainImageUpload">主图片</label>
+                <input type="file" id="iphoneMainImageUpload" accept="image/*" multiple />
+                <div id="iphoneMainImagePreviewContainer" class="preview-list"></div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h2 class="panel-title">背景设置</h2>
+              <div class="form-group">
+                <label>背景类型</label>
+                <div class="bg-type-btn-group">
+                  <button id="iphoneBgTypeSolidBtn" class="bg-type-btn active" data-type="solid">
+                    <span class="btn-icon">🎨</span>
+                    纯色
+                  </button>
+                  <button id="iphoneBgTypeGradientBtn" class="bg-type-btn" data-type="gradient">
+                    <span class="btn-icon">🌈</span>
+                    渐变
+                  </button>
+                </div>
+                <input type="radio" id="iphoneBgTypeSolid" name="iphoneBgType" value="solid" checked hidden>
+                <input type="radio" id="iphoneBgTypeGradient" name="iphoneBgType" value="gradient" hidden>
+              </div>
+
+              <!-- 纯色设置 -->
+              <div id="iphoneBgSolidSettings" class="bg-settings">
+                <div class="form-group">
+                  <label for="iphoneBgColor">背景颜色</label>
+                  <div class="color-picker">
+                    <input type="color" id="iphoneBgColor" value="#ffffff" />
+                    <input type="range" id="iphoneBgOpacity" min="0" max="100" value="0" />
+                    <span id="iphoneBgColorValue">#ffffff (0%)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 渐变设置 -->
+              <div id="iphoneBgGradientSettings" class="bg-settings" style="display: none;">
+                <div class="form-group">
+                  <label>预设渐变</label>
+                  <select id="iphoneBgGradientPreset">
+                    <option value="random" selected>🎲 随机渐变</option>
+                    <option value="none">自定义</option>
+                    <option value="sunset">夕阳余晖</option>
+                    <option value="ocean">海洋蓝调</option>
+                    <option value="forest">森林绿意</option>
+                    <option value="purple">紫色梦幻</option>
+                    <option value="pink">粉色蔷薇</option>
+                    <option value="gold">金色辉煌</option>
+                    <option value="night">静谧夜色</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="iphoneBgColor1">起始颜色</label>
+                  <div class="color-picker">
+                    <input type="color" id="iphoneBgColor1" value="#FF6B6B" />
+                    <span id="iphoneBgColor1Value">#FF6B6B</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="iphoneBgColor2">结束颜色</label>
+                  <div class="color-picker">
+                    <input type="color" id="iphoneBgColor2" value="#4ECDC4" />
+                    <span id="iphoneBgColor2Value">#4ECDC4</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="iphoneBgGradientAngle">渐变角度</label>
+                  <div class="slider-container">
+                    <input type="range" id="iphoneBgGradientAngle" min="0" max="360" value="45" />
+                    <span class="slider-value" id="iphoneBgGradientAngleValue">45°</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h2 class="panel-title">边框预览</h2>
+              <div class="form-group">
+                <label>当前使用的边框</label>
+                <div id="iphoneBorderPreview" class="border-preview-container">
+                  <img id="iphoneBorderImage" src="images/iphone-border-16promax.png" alt="iPhone边框" />
+                </div>
+                <p class="border-info">当前使用：iPhone 16 Pro Max 边框</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右侧预览区域 -->
+        <div class="preview-column">
+          <div class="preview-container">
+            <h3 class="preview-title">iPhone套壳预览</h3>
+            <div id="iphonePreviewContainer" class="card-preview-grid"></div>
+
+            <div class="preview-btn-group">
+              <button id="iphoneGenerateBtn" class="btn">生成套壳</button>
+              <button id="iphoneResetBtn" class="btn btn-danger">重置设置</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
 
       <div id="imageModal" class="modal">
         <span class="close-btn">&times;</span>
@@ -1059,7 +1346,6 @@
       const cardShadowValue = document.getElementById("cardShadowValue");
       // 水印相关元素
       const enableWatermarkInput = document.getElementById("enableWatermark");
-      const enableIPhoneMockupInput = document.getElementById("enableIPhoneMockup");
       const watermarkTextInput = document.getElementById("watermarkText");
       const watermarkColorInput = document.getElementById("watermarkColor");
       const watermarkColorValue = document.getElementById(
@@ -1084,6 +1370,32 @@
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
 
+      // iPhone套壳功能DOM元素
+      const iphoneMainImageUploadInput = document.getElementById("iphoneMainImageUpload");
+      const iphoneMainImagePreviewContainer = document.getElementById("iphoneMainImagePreviewContainer");
+      const iphoneBgColorInput = document.getElementById("iphoneBgColor");
+      const iphoneBgOpacityInput = document.getElementById("iphoneBgOpacity");
+      const iphoneBgColorValue = document.getElementById("iphoneBgColorValue");
+      const iphoneBorderImage = document.getElementById("iphoneBorderImage");
+
+      // 背景类型元素
+      const iphoneBgTypeSolidBtn = document.getElementById("iphoneBgTypeSolidBtn");
+      const iphoneBgTypeGradientBtn = document.getElementById("iphoneBgTypeGradientBtn");
+      const iphoneBgTypeSolidInput = document.getElementById("iphoneBgTypeSolid");
+      const iphoneBgTypeGradientInput = document.getElementById("iphoneBgTypeGradient");
+      const iphoneBgSolidSettings = document.getElementById("iphoneBgSolidSettings");
+      const iphoneBgGradientSettings = document.getElementById("iphoneBgGradientSettings");
+      const iphoneBgGradientPresetSelect = document.getElementById("iphoneBgGradientPreset");
+      const iphoneBgColor1Input = document.getElementById("iphoneBgColor1");
+      const iphoneBgColor2Input = document.getElementById("iphoneBgColor2");
+      const iphoneBgColor1Value = document.getElementById("iphoneBgColor1Value");
+      const iphoneBgColor2Value = document.getElementById("iphoneBgColor2Value");
+      const iphoneBgGradientAngleInput = document.getElementById("iphoneBgGradientAngle");
+      const iphoneBgGradientAngleValue = document.getElementById("iphoneBgGradientAngleValue");
+      const iphoneGenerateBtn = document.getElementById("iphoneGenerateBtn");
+      const iphoneResetBtn = document.getElementById("iphoneResetBtn");
+      const iphonePreviewContainer = document.getElementById("iphonePreviewContainer");
+
       // 预加载 iPhone 边框图片
       const borderImg = new Image();
       borderImg.src = "images/iphone-border-15promax.png";
@@ -1094,6 +1406,53 @@
         borderImg.onload = () => console.log("iPhone 边框图片加载完成");
         borderImg.onerror = () => console.error("iPhone 边框图片加载失败");
       }
+
+      // 初始化时从本地存储恢复tab选择
+      const savedMainTab = localStorage.getItem('selectedMainTab') || 'card';
+
+      // 设置默认激活的tab
+      document.querySelectorAll(".main-tab-btn").forEach((btn) => {
+        btn.classList.remove("active");
+      });
+      document.querySelectorAll(".main-tab-content").forEach((c) => {
+        c.classList.remove("active");
+      });
+
+      // 激活保存的tab
+      const savedTabBtn = document.querySelector(`[data-main-tab="${savedMainTab}"]`);
+      if (savedTabBtn) {
+        savedTabBtn.classList.add("active");
+        const savedTabContent = document.getElementById(`main-tab-${savedMainTab}`);
+        if (savedTabContent) {
+          savedTabContent.classList.add("active");
+        }
+      } else {
+        // 如果未找到保存的tab，使用默认值
+        document.querySelector(`[data-main-tab="card"]`).classList.add("active");
+        document.getElementById(`main-tab-card`).classList.add("active");
+      }
+
+      // Main tabs switching functionality
+      document.querySelectorAll(".main-tab-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const tabId = this.getAttribute("data-main-tab");
+
+          // Remove active class from all buttons and content
+          document.querySelectorAll(".main-tab-btn").forEach((b) =>
+            b.classList.remove("active")
+          );
+          document.querySelectorAll(".main-tab-content").forEach((c) =>
+            c.classList.remove("active")
+          );
+
+          // Add active class to clicked button and corresponding content
+          this.classList.add("active");
+          document.getElementById("main-tab-" + tabId).classList.add("active");
+
+          // 保存到本地存储
+          localStorage.setItem('selectedMainTab', tabId);
+        });
+      });
 
       // Tab switching functionality
       document.querySelectorAll(".tab-btn").forEach((btn) => {
@@ -1146,10 +1505,245 @@
             const img = document.createElement("img");
             img.src = e.target.result;
             img.classList.add("image-preview");
+            img.style.cursor = "pointer";
+            img.onclick = () => openModal(e.target.result);
             container.appendChild(img);
           };
           reader.readAsDataURL(file);
         });
+      }
+
+      // iPhone套壳预览更新函数
+      function updateIphonePreview(container, files) {
+        container.innerHTML = ""; // 清空现有预览
+        files.forEach((file) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.classList.add("image-preview");
+            img.style.cursor = "pointer";
+            img.onclick = () => openModal(e.target.result);
+            container.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // iPhone套壳生成函数
+      async function generateIPhoneCards() {
+        if (iphoneMainImageFiles.length === 0) {
+          showToast("请先上传主图片");
+          return;
+        }
+
+        iphoneGenerateBtn.disabled = true;
+        iphoneGenerateBtn.textContent = "生成中...";
+        loadingDiv.classList.add("show");
+
+        iphonePreviewContainer.innerHTML = "";
+
+        try {
+          const images = await Promise.all(
+            iphoneMainImageFiles.map((file) => loadImageAsync(URL.createObjectURL(file)))
+          );
+
+          for (let i = 0; i < images.length; i++) {
+            const mainImage = images[i];
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+
+            // 设置iPhone套壳画布尺寸 (1400x2820)
+            canvas.width = 1400;
+            canvas.height = 2820;
+
+            // 设置整个canvas的背景
+            const bgType = iphoneBgTypeSolidInput.checked ? 'solid' : 'gradient';
+
+            if (bgType === 'gradient') {
+              // 如果是随机渐变，每次都重新生成
+              if (iphoneBgGradientPresetSelect.value === 'random') {
+                const randomGradient = generateRandomGradient();
+                const color1 = '#' + randomGradient.color1;
+                const color2 = '#' + randomGradient.color2;
+                const angle = randomGradient.angle;
+
+                // 绘制随机渐变背景
+                const radians = (angle - 90) * Math.PI / 180;
+                const x1 = canvas.width / 2 - Math.cos(radians) * canvas.width;
+                const y1 = canvas.height / 2 - Math.sin(radians) * canvas.height;
+                const x2 = canvas.width / 2 + Math.cos(radians) * canvas.width;
+                const y2 = canvas.height / 2 + Math.sin(radians) * canvas.height;
+
+                const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+                gradient.addColorStop(0, color1);
+                gradient.addColorStop(1, color2);
+
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+              } else {
+                // 绘制正常渐变背景
+                const color1 = iphoneBgColor1Input.value;
+                const color2 = iphoneBgColor2Input.value;
+                const angle = parseInt(iphoneBgGradientAngleInput.value);
+
+                // 计算渐变的方向
+                const radians = (angle - 90) * Math.PI / 180;
+                const x1 = canvas.width / 2 - Math.cos(radians) * canvas.width;
+                const y1 = canvas.height / 2 - Math.sin(radians) * canvas.height;
+                const x2 = canvas.width / 2 + Math.cos(radians) * canvas.width;
+                const y2 = canvas.height / 2 + Math.sin(radians) * canvas.height;
+
+                const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+                gradient.addColorStop(0, color1);
+                gradient.addColorStop(1, color2);
+
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+              }
+            } else {
+              // 绘制纯色背景
+              const bgColor = iphoneBgColorInput.value;
+              const bgOpacity = iphoneBgOpacityInput.value / 100;
+              if (bgOpacity > 0) {
+                ctx.fillStyle = bgColor + Math.floor(bgOpacity * 255).toString(16).padStart(2, '0');
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+              }
+            }
+
+            // 绘制iPhone套壳
+            await drawIPhoneMockupForCanvas(ctx, canvas, mainImage, null);
+
+            // 创建预览容器
+            const previewItem = document.createElement("div");
+            previewItem.classList.add("card-preview-item");
+
+            const previewImg = document.createElement("img");
+            previewImg.src = canvas.toDataURL();
+            previewImg.classList.add("card-image");
+            previewImg.style.cursor = "pointer";
+            previewImg.onclick = () => openModal(canvas.toDataURL());
+            previewItem.appendChild(previewImg);
+
+            // 添加下载和复制按钮
+            const btnGroup = document.createElement("div");
+            btnGroup.classList.add("card-btn-group");
+
+            const downloadCurrentBtn = document.createElement("button");
+            downloadCurrentBtn.classList.add("btn", "btn-small", "btn-primary");
+            downloadCurrentBtn.textContent = "下载";
+            downloadCurrentBtn.onclick = () => {
+              const link = document.createElement("a");
+              link.download = `iphone-card-${i + 1}.png`;
+              link.href = canvas.toDataURL();
+              link.click();
+            };
+            btnGroup.appendChild(downloadCurrentBtn);
+
+            const copyBtn = document.createElement("button");
+            copyBtn.classList.add("btn", "btn-small", "btn-secondary");
+            copyBtn.textContent = "复制";
+            copyBtn.onclick = async () => {
+              try {
+                const response = await fetch(canvas.toDataURL());
+                const blob = await response.blob();
+                await navigator.clipboard.write([
+                  new ClipboardItem({ [blob.type]: blob }),
+                ]);
+                showToast("图片已复制到剪贴板", "success");
+              } catch (err) {
+                console.error("复制图片失败:", err);
+                showToast("复制失败，请使用下载方式", "error");
+              }
+            };
+            btnGroup.appendChild(copyBtn);
+
+            previewItem.appendChild(btnGroup);
+            iphonePreviewContainer.appendChild(previewItem);
+          }
+
+          showToast("iPhone套壳生成完成！");
+        } catch (error) {
+          console.error("生成iPhone套壳时出错:", error);
+          showToast("生成失败，请重试");
+        } finally {
+          iphoneGenerateBtn.disabled = false;
+          iphoneGenerateBtn.textContent = "生成套壳";
+          loadingDiv.classList.remove("show");
+        }
+      }
+
+      // iPhone套壳绘制函数
+      async function drawIPhoneMockupForCanvas(ctx, canvas, mainImage, qrCodeImage) {
+        // 预加载边框图片
+        if (!window.iphoneBorderImg || !window.iphoneBorderImg.complete) {
+          window.iphoneBorderImg = new Image();
+          window.iphoneBorderImg.src = "images/iphone-border-16promax.png";
+          await new Promise((resolve, reject) => {
+            window.iphoneBorderImg.onload = resolve;
+            window.iphoneBorderImg.onerror = reject;
+          });
+        }
+
+        const borderImg = window.iphoneBorderImg;
+        const canvasW = 1400;
+        const canvasH = 2820;
+        const borderSrcW = borderImg.naturalWidth || 1400;
+        const borderSrcH = borderImg.naturalHeight || 2820;
+
+        // 边框设置
+        const borderW = 1195;
+        const borderH = borderSrcH * (borderW / borderSrcW);
+        const drawBorderX = (canvasW - borderW) / 2;
+        const drawBorderY = (canvasH - borderH) / 2;
+
+        // 主图片设置
+        const imgW = 1076;
+        const imgRadius = 150;
+        const imgX = (canvasW - imgW) / 2;
+        const imgY = (canvasH - (mainImage.height * (imgW / mainImage.width))) / 2;
+        const imgH = mainImage.height * (imgW / mainImage.width);
+
+        // 绘制主图片
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(imgX, imgY, imgW, imgH, imgRadius);
+        ctx.clip();
+        ctx.drawImage(mainImage, imgX, imgY, imgW, imgH);
+        ctx.restore();
+
+        // 绘制边框
+        ctx.save();
+        ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
+        ctx.shadowBlur = 50;
+        ctx.shadowOffsetX = 10;
+        ctx.shadowOffsetY = 20;
+        ctx.drawImage(borderImg, 0, 0, borderSrcW, borderSrcH, drawBorderX, drawBorderY, borderW, borderH);
+        ctx.restore();
+
+
+      }
+
+
+      // iPhone套壳重置函数
+      function resetIPhoneForm() {
+        iphoneMainImageFiles = [];
+        iphoneMainImageUploadInput.value = "";
+
+        // 重置背景为纯色透明
+        iphoneBgTypeSolidBtn.classList.add("active");
+        iphoneBgTypeGradientBtn.classList.remove("active");
+        iphoneBgTypeSolidInput.checked = true;
+        iphoneBgTypeGradientInput.checked = false;
+        iphoneBgSolidSettings.style.display = "block";
+        iphoneBgGradientSettings.style.display = "none";
+
+        iphoneBgColorInput.value = "#ffffff";
+        iphoneBgOpacityInput.value = "0";
+        iphoneBgColorValue.textContent = "#ffffff (0%)";
+
+        iphoneMainImagePreviewContainer.innerHTML = "";
+        iphonePreviewContainer.innerHTML = "";
       }
 
       // 颜色选择器值显示
@@ -1211,6 +1805,152 @@
 
       // 重置表单
       resetBtn.addEventListener("click", resetForm);
+
+      // iPhone套壳功能事件监听器
+      let iphoneMainImageFiles = [];
+
+      // 预加载边框图片
+      const borderPreviewImg = new Image();
+      borderPreviewImg.src = "images/iphone-border-16promax.png";
+      borderPreviewImg.onload = () => {
+        console.log("边框预览图片加载完成");
+      };
+      borderPreviewImg.onerror = () => {
+        console.error("边框预览图片加载失败");
+        // 如果找不到边框图片，隐藏预览区域
+        const borderPreview = document.getElementById("iphoneBorderPreview");
+        if (borderPreview) {
+          borderPreview.style.display = "none";
+        }
+        const borderInfo = document.querySelector(".border-info");
+        if (borderInfo) {
+          borderInfo.textContent = "边框图片未找到";
+        }
+      };
+
+      iphoneMainImageUploadInput.addEventListener("change", (e) => {
+        iphoneMainImageFiles = Array.from(e.target.files).sort(naturalSortComparer);
+        updateIphonePreview(iphoneMainImagePreviewContainer, iphoneMainImageFiles);
+      });
+
+      // 背景色透明度值更新
+      iphoneBgOpacityInput.addEventListener("input", () => {
+        const color = iphoneBgColorInput.value;
+        const opacity = iphoneBgOpacityInput.value;
+        iphoneBgColorValue.textContent = `${color} (${opacity}%)`;
+      });
+
+      // 背景颜色值更新
+      iphoneBgColorInput.addEventListener("input", () => {
+        const color = iphoneBgColorInput.value;
+        const opacity = iphoneBgOpacityInput.value;
+        iphoneBgColorValue.textContent = `${color} (${opacity}%)`;
+      });
+
+      // 边框图片点击预览
+      iphoneBorderImage.addEventListener("click", () => {
+        openModal(iphoneBorderImage.src);
+      });
+
+      // 背景类型切换
+      iphoneBgTypeSolidBtn.addEventListener("click", () => {
+        iphoneBgTypeSolidBtn.classList.add("active");
+        iphoneBgTypeGradientBtn.classList.remove("active");
+        iphoneBgTypeSolidInput.checked = true;
+        iphoneBgSolidSettings.style.display = "block";
+        iphoneBgGradientSettings.style.display = "none";
+      });
+
+      iphoneBgTypeGradientBtn.addEventListener("click", () => {
+        iphoneBgTypeGradientBtn.classList.add("active");
+        iphoneBgTypeSolidBtn.classList.remove("active");
+        iphoneBgTypeGradientInput.checked = true;
+        iphoneBgSolidSettings.style.display = "none";
+        iphoneBgGradientSettings.style.display = "block";
+      });
+
+      // 渐变预设选择
+      const gradientPresets = {
+        sunset: { color1: "#FF6B6B", color2: "#4ECDC4", angle: 135 },
+        ocean: { color1: "#667eea", color2: "#764ba2", angle: 90 },
+        forest: { color1: "#11998e", color2: "#38ef7d", angle: 135 },
+        purple: { color1: "#ee0979", color2: "#ff6a00", angle: 45 },
+        pink: { color1: "#f093fb", color2: "#f5576c", angle: 180 },
+        gold: { color1: "#f7971e", color2: "#ffd200", angle: 45 },
+        night: { color1: "#0f0c29", color2: "#302b63", angle: 90 }
+      };
+
+      // 生成随机渐变
+      function generateRandomGradient() {
+        const randomColor = () => {
+          const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F'];
+          return colors[Math.floor(Math.random() * colors.length)];
+        };
+
+        const color1 = randomColor();
+        let color2 = randomColor();
+        // 确保两个颜色不同
+        while (color2 === color1) {
+          color2 = randomColor();
+        }
+
+        const angle = Math.floor(Math.random() * 360);
+
+        return {
+          color1: color1.substring(1), // 移除#号
+          color2: color2.substring(1), // 移除#号
+          angle: angle
+        };
+      }
+
+      iphoneBgGradientPresetSelect.addEventListener("change", () => {
+        const value = iphoneBgGradientPresetSelect.value;
+
+        if (value === 'random') {
+          const randomGradient = generateRandomGradient();
+          iphoneBgColor1Input.value = '#' + randomGradient.color1;
+          iphoneBgColor2Input.value = '#' + randomGradient.color2;
+          iphoneBgGradientAngleInput.value = randomGradient.angle;
+          iphoneBgColor1Value.textContent = '#' + randomGradient.color1;
+          iphoneBgColor2Value.textContent = '#' + randomGradient.color2;
+          iphoneBgGradientAngleValue.textContent = randomGradient.angle + "°";
+        } else {
+          const preset = gradientPresets[value];
+          if (preset) {
+            iphoneBgColor1Input.value = preset.color1;
+            iphoneBgColor2Input.value = preset.color2;
+            iphoneBgGradientAngleInput.value = preset.angle;
+            iphoneBgColor1Value.textContent = preset.color1;
+            iphoneBgColor2Value.textContent = preset.color2;
+            iphoneBgGradientAngleValue.textContent = preset.angle + "°";
+          }
+        }
+      });
+
+      // 颜色选择器值更新
+      iphoneBgColor1Input.addEventListener("input", () => {
+        iphoneBgColor1Value.textContent = iphoneBgColor1Input.value;
+        iphoneBgGradientPresetSelect.value = "none";
+      });
+
+      iphoneBgColor2Input.addEventListener("input", () => {
+        iphoneBgColor2Value.textContent = iphoneBgColor2Input.value;
+        iphoneBgGradientPresetSelect.value = "none";
+      });
+
+      // 渐变角度更新
+      iphoneBgGradientAngleInput.addEventListener("input", () => {
+        iphoneBgGradientAngleValue.textContent = iphoneBgGradientAngleInput.value + "°";
+        iphoneBgGradientPresetSelect.value = "none";
+      });
+
+      // iPhone套壳生成按钮
+      iphoneGenerateBtn.addEventListener("click", generateIPhoneCards);
+
+      // iPhone套壳下载按钮
+
+      // iPhone套壳重置按钮
+      iphoneResetBtn.addEventListener("click", resetIPhoneForm);
 
       // 加载图片函数
       function loadImage(file, previewElement) {
@@ -1279,10 +2019,8 @@
               : null;
 
             // 设置画布尺寸
-            // const cardWidth = 900;
-            // const cardHeight = 1200;
-            const cardWidth = 100;
-            const cardHeight = 2920;
+            const cardWidth = 900;
+            const cardHeight = 1200;
             canvas.width = cardWidth;
             canvas.height = cardHeight;
 
@@ -1300,81 +2038,7 @@
               drawWatermark();
             }
 
-            // 检查是否启用 iPhone 套壳模式
-            if (enableIPhoneMockupInput.checked) {
-              drawIPhoneMockup(mainImage, qrCodeImage);
-
-              // 绘制标题
-              if (cardTitleInput.value.trim()) {
-                const text = cardTitleInput.value.trim();
-                const fontSize = parseInt(textSizeInput.value);
-                const fontFamily = fontFamilySelect.value;
-                const textColor = textColorInput.value;
-                const textShadow = parseInt(textShadowInput.value);
-
-                ctx.font = `bold ${fontSize}px ${fontFamily}`;
-                ctx.textAlign = "center";
-                ctx.textBaseline = "top";
-
-                if (textShadow > 0) {
-                  ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
-                  ctx.shadowBlur = textShadow;
-                  ctx.shadowOffsetX = textShadow / 2;
-                  ctx.shadowOffsetY = textShadow / 2;
-                }
-
-                const lines = wrapTextImproved(ctx, text, cardWidth - 100, fontSize);
-                const lineHeight = fontSize * 1.3;
-                const totalTextHeight = lines.length * lineHeight;
-                const textX = cardWidth / 2;
-                const textY = cardHeight - 120;
-
-                ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-                const textBgPadding = 10;
-                const textBgWidth = cardWidth - 60;
-                const textBgHeight = totalTextHeight + textBgPadding * 2;
-                const textBgX = (cardWidth - textBgWidth) / 2;
-                const textBgY = textY - textBgPadding;
-
-                roundRect(ctx, textBgX, textBgY, textBgWidth, textBgHeight, 8, true, false);
-
-                ctx.fillStyle = textColor;
-                for (let j = 0; j < lines.length; j++) {
-                  ctx.fillText(lines[j], textX, textY + j * lineHeight);
-                }
-
-                ctx.shadowColor = "transparent";
-                ctx.shadowBlur = 0;
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 0;
-              }
-
-              // 创建预览项
-              const dataUrl = canvas.toDataURL("image/png");
-              const previewItem = document.createElement("div");
-              previewItem.classList.add("preview-item");
-
-              const img = document.createElement("img");
-              img.src = dataUrl;
-              img.onclick = () => openModal(dataUrl);
-
-              const downloadButton = document.createElement("button");
-              downloadButton.textContent = "下载";
-              downloadButton.classList.add("download-btn");
-              downloadButton.onclick = () => downloadImage(dataUrl, `card_${i + 1}_iphone.png`);
-
-              const copyButton = document.createElement("button");
-              copyButton.textContent = "复制";
-              copyButton.classList.add("download-btn");
-              copyButton.onclick = () => copyToClipboard(dataUrl);
-
-              previewItem.appendChild(img);
-              previewItem.appendChild(downloadButton);
-              previewItem.appendChild(copyButton);
-              cardPreviewContainer.appendChild(previewItem);
-
-              continue; // 跳过常规图片绘制逻辑
-            }
+            // iPhone套壳功能已移到独立tab，不再在卡片生成中处理
 
             const contentWidth = cardWidth - 2 * padding;
             const contentHeight = cardHeight - 2 * padding;
@@ -1401,6 +2065,11 @@
               mainImageX = padding + spacing;
               mainImageY = padding + (contentHeight - mainImageHeight) / 2;
 
+              // 绘制圆角主图片
+              ctx.save();
+              ctx.beginPath();
+              ctx.roundRect(mainImageX, mainImageY, mainImageWidth, mainImageHeight, 60);
+              ctx.clip();
               ctx.drawImage(
                 mainImage,
                 mainImageX,
@@ -1408,6 +2077,7 @@
                 mainImageWidth,
                 mainImageHeight
               );
+              ctx.restore();
 
               // 绘制二维码
               const finalQrCodeSize = Math.min(
@@ -1442,6 +2112,12 @@
               }
               mainImageX = padding + (contentWidth - mainImageWidth) / 2;
               mainImageY = padding + (contentHeight - mainImageHeight) / 2;
+
+              // 绘制圆角主图片
+              ctx.save();
+              ctx.beginPath();
+              ctx.roundRect(mainImageX, mainImageY, mainImageWidth, mainImageHeight, 150);
+              ctx.clip();
               ctx.drawImage(
                 mainImage,
                 mainImageX,
@@ -1449,6 +2125,7 @@
                 mainImageWidth,
                 mainImageHeight
               );
+              ctx.restore();
             }
 
             // 绘制标题
@@ -1696,94 +2373,6 @@
         ctx.restore();
       }
 
-      // 绘制 iPhone 16 Pro Max 套壳
-      function drawIPhoneMockup(mainImage, qrCodeImage) {
-        const enableMockup = document.getElementById("enableIPhoneMockup").checked;
-        if (!enableMockup) return;
-
-        // 检查边框图片是否已加载
-        if (!window.borderImg || !window.borderImg.complete) {
-          window.borderImg = new Image();
-          window.borderImg.src = "images/iphone-border-16promax.png";
-          window.borderImg.onload = () => {
-            if (typeof generateCard === 'function') {
-              generateCard();
-            }
-          };
-          return;
-        }
-
-        // 画布尺寸（1400x2820）
-        const canvasW = 1400;
-        const canvasH = 2820;
-        canvas.width = canvasW;
-        canvas.height = canvasH;
-
-        const borderImg = window.borderImg;
-        const borderSrcW = borderImg.naturalWidth || 1400;
-        const borderSrcH = borderImg.naturalHeight || 2820;
-
-        // 边框宽度设为 1195，高度按比例缩放
-        const borderW = 1195;
-        const borderH = borderSrcH * (borderW / borderSrcW);
-        const scale = borderW / borderSrcW;
-
-        const drawBorderX = (canvasW - borderW) / 2;
-        const drawBorderY = (canvasH - borderH) / 2;
-
-        // 主图片尺寸（1076宽度，高度自适应，圆角 150）
-        const imgW = 1076;
-        const imgRadius = 150;
-
-        // 主图片位置（居中）
-        const imgX = (canvasW - imgW) / 2;
-        const imgY = (canvasH - (mainImage.height * (imgW / mainImage.width))) / 2;
-        const imgH = mainImage.height * (imgW / mainImage.width);
-
-        // 绘制主图片（带圆角）
-        ctx.save();
-        ctx.beginPath();
-        ctx.roundRect(imgX, imgY, imgW, imgH, imgRadius);
-        ctx.clip();
-        ctx.drawImage(mainImage, imgX, imgY, imgW, imgH);
-        ctx.restore();
-
-        // 绘制边框图片叠加在上面
-        ctx.save();
-        ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
-        ctx.shadowBlur = 50;
-        ctx.shadowOffsetX = 10;
-        ctx.shadowOffsetY = 20;
-
-        ctx.drawImage(borderImg, 0, 0, borderSrcW, borderSrcH, drawBorderX, drawBorderY, borderW, borderH);
-        ctx.restore();
-
-        // 动态岛遮罩（椭圆形）
-        ctx.save();
-        const diW = 95;
-        const diH = 35;
-        const diX = (canvasW - diW) / 2;
-        const diY = drawBorderY + 20 * scale * borderSrcW;
-
-        ctx.beginPath();
-        ctx.ellipse(diX + diW / 2, diY + diH / 2, diW / 2, diH / 2, 0, 0, Math.PI * 2);
-        ctx.fillStyle = "#000000";
-        ctx.fill();
-        ctx.restore();
-
-        // Home Indicator
-        ctx.save();
-        const indicatorW = 160;
-        const indicatorH = 5;
-        const indicatorX = (canvasW - indicatorW) / 2;
-        const indicatorY = canvasH - 30;
-
-        ctx.beginPath();
-        ctx.roundRect(indicatorX, indicatorY, indicatorW, indicatorH, indicatorH / 2);
-        ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
-        ctx.fill();
-        ctx.restore();
-      }
 
       // 绘制圆角矩形 - 改进版，使用arcTo方法更精确地绘制圆角
       function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
@@ -1927,6 +2516,10 @@
       }
 
       // 显示消息
+      function showToast(message, type = "success") {
+        showMessage(message, type);
+      }
+
       function showMessage(message, type) {
         // 成功消息使用更短的显示时间，错误消息保持较长时间
         const displayTime = type === "success" ? 2000 : 3000;
@@ -2405,7 +2998,7 @@
             break;
           case "auto":
             // 自动模式 - 需要检查是否已上传主图片
-            if (mainImageInput.files && mainImageInput.files.length > 0) {
+            if (mainImageUploadInput.files && mainImageUploadInput.files.length > 0) {
               // 显示加载指示器
               loadingDiv.classList.add("show");
 
@@ -2444,7 +3037,7 @@
                 showMessage("无法分析图片颜色，已使用默认颜色", "error");
               };
 
-              img.src = URL.createObjectURL(mainImageInput.files[0]);
+              img.src = URL.createObjectURL(mainImageUploadInput.files[0]);
             } else {
               showMessage("请先上传主图片，再使用自动颜色功能", "error");
               // 重置为默认样式
@@ -2682,8 +3275,7 @@
         watermarkSizeValue.textContent = "16";
         watermarkPositionSelect.value = "tile";
 
-        // 重置 iPhone 套壳设置
-        enableIPhoneMockupInput.checked = true;
+        // iPhone套壳功能已移到独立tab，无需重置
 
         // 重置预览
         cardPreviewContainer.innerHTML = "";
@@ -2714,6 +3306,13 @@
           modal.style.display = "none";
         }
       };
+
+      // ESC键关闭模态框
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && modal.style.display === 'block') {
+          modal.style.display = 'none';
+        }
+      });
     </script>
   </body>
 </html>
