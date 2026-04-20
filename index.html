@@ -2144,8 +2144,8 @@
             const mainImageRatio = mainImage.width / mainImage.height;
             let mainImageHeight, mainImageWidth, mainImageX, mainImageY;
 
-            if (qrCodeImage) {
-              // Left-Right Layout
+            if (qrCodeImage && currentCardSize !== '1080x1440') {
+              // Left-Right Layout (小红书尺寸不显示二维码)
               const qrCodeSize = contentWidth * 0.25; // Allocate space for QR code
               const mainImageMaxWidth = contentWidth - qrCodeSize - spacing * 2;
               const mainImageMaxHeight = contentHeight * 0.95;
