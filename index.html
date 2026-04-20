@@ -1224,7 +1224,7 @@
             <!-- 尺寸选择 Tab -->
             <div class="size-tabs">
               <button class="size-tab-btn active" data-size="900x1200">900×1200</button>
-              <button class="size-tab-btn" data-size="1080x1440">1080×1440</button>
+              <button class="size-tab-btn" data-size="1080x1440">小红书 1080×1440</button>
             </div>
             <div id="cardPreviewContainer" class="card-preview-grid"></div>
 
@@ -1536,6 +1536,13 @@
           // 保存选择到 localStorage
           currentCardSize = this.dataset.size;
           localStorage.setItem('selectedCardSize', currentCardSize);
+
+          // 根据尺寸更新水印文字
+          if (currentCardSize === '1080x1440') {
+            watermarkTextInput.value = '科技阿研';
+          } else {
+            watermarkTextInput.value = '公众号:科技研习室';
+          }
 
           // 如果已有生成的卡片，重新生成
           if (cardPreviewContainer.children.length > 0) {
