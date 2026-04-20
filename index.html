@@ -133,6 +133,46 @@
         display: block;
       }
 
+      /* 尺寸选择 Tabs 样式 */
+      .size-tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 2px solid #e0e0e0;
+        margin-bottom: 15px;
+      }
+
+      .size-tab-btn {
+        padding: 10px 16px;
+        background: none;
+        border: none;
+        font-size: 14px;
+        font-weight: 500;
+        color: #666;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .size-tab-btn:hover {
+        color: var(--primary-color);
+        background-color: rgba(74, 144, 226, 0.05);
+      }
+
+      .size-tab-btn.active {
+        color: var(--primary-color);
+        font-weight: 600;
+      }
+
+      .size-tab-btn.active::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: var(--primary-color);
+      }
+
       .panel {
         background-color: #fff;
         border-radius: 8px;
@@ -768,6 +808,19 @@
           white-space: nowrap;
         }
 
+        /* 尺寸 Tab 移动端适配 */
+        .size-tabs {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          padding-bottom: 5px;
+        }
+
+        .size-tab-btn {
+          padding: 8px 12px;
+          font-size: 13px;
+          white-space: nowrap;
+        }
+
         /* 表单元素适配 */
         .form-group {
           margin-bottom: 12px;
@@ -1168,6 +1221,11 @@
         <div class="preview-column">
           <div class="preview-container">
             <h3 class="preview-title">卡片预览</h3>
+            <!-- 尺寸选择 Tab -->
+            <div class="size-tabs">
+              <button class="size-tab-btn active" data-size="900x1200">900×1200</button>
+              <button class="size-tab-btn" data-size="1080x1440">1080×1440</button>
+            </div>
             <div id="cardPreviewContainer" class="card-preview-grid"></div>
 
             <!-- 生成、下载和重置按钮放在右侧预览区域 -->
@@ -1407,6 +1465,9 @@
         borderImg.onerror = () => console.error("iPhone 边框图片加载失败");
       }
 
+      // 当前选中的卡片尺寸
+      let currentCardSize = localStorage.getItem('selectedCardSize') || '900x1200';
+
       // 初始化时从本地存储恢复tab选择
       const savedMainTab = localStorage.getItem('selectedMainTab') || 'card';
 
@@ -1432,6 +1493,17 @@
         document.getElementById(`main-tab-card`).classList.add("active");
       }
 
+      // 恢复尺寸 Tab 选择状态
+      document.querySelectorAll(".size-tab-btn").forEach((btn) => {
+        btn.classList.remove("active");
+      });
+      const savedSizeBtn = document.querySelector(`.size-tab-btn[data-size="${currentCardSize}"]`);
+      if (savedSizeBtn) {
+        savedSizeBtn.classList.add("active");
+      } else {
+        document.querySelector(`.size-tab-btn[data-size="900x1200"]`).classList.add("active");
+      }
+
       // Main tabs switching functionality
       document.querySelectorAll(".main-tab-btn").forEach((btn) => {
         btn.addEventListener("click", function () {
@@ -1451,6 +1523,24 @@
 
           // 保存到本地存储
           localStorage.setItem('selectedMainTab', tabId);
+        });
+      });
+
+      // 尺寸 Tabs 切换功能
+      document.querySelectorAll(".size-tab-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          // 更新 Tab 选中状态
+          document.querySelectorAll(".size-tab-btn").forEach((b) => b.classList.remove("active"));
+          this.classList.add("active");
+
+          // 保存选择到 localStorage
+          currentCardSize = this.dataset.size;
+          localStorage.setItem('selectedCardSize', currentCardSize);
+
+          // 如果已有生成的卡片，重新生成
+          if (cardPreviewContainer.children.length > 0) {
+            generateBtn.click();
+          }
         });
       });
 
@@ -2018,9 +2108,8 @@
               ? await loadImageAsync(URL.createObjectURL(qrCodeFile))
               : null;
 
-            // 设置画布尺寸
-            const cardWidth = 900;
-            const cardHeight = 1200;
+            // 设置画布尺寸（根据当前选中的尺寸 Tab）
+            const [cardWidth, cardHeight] = currentCardSize.split('x').map(Number);
             canvas.width = cardWidth;
             canvas.height = cardHeight;
 
