@@ -1504,6 +1504,13 @@
         document.querySelector(`.size-tab-btn[data-size="900x1200"]`).classList.add("active");
       }
 
+      // 初始化时根据尺寸设置水印文字
+      if (currentCardSize === '1080x1440') {
+        watermarkTextInput.value = '科技阿研';
+      } else {
+        watermarkTextInput.value = '公众号:科技研习室';
+      }
+
       // Main tabs switching functionality
       document.querySelectorAll(".main-tab-btn").forEach((btn) => {
         btn.addEventListener("click", function () {
@@ -1980,7 +1987,34 @@
       // 生成随机渐变
       function generateRandomGradient() {
         const randomColor = () => {
-          const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F'];
+          const colors = [
+            // 柔和暖色系
+            '#E8B4B8', '#D4A5A5', '#C9B1B1', '#F5D5D5', '#E6C9C9',
+            '#F2D7D7', '#DEB887', '#D2B48C', '#E6D5B8', '#F5E6D3',
+            '#FFDAB9', '#FFE4C4', '#F5DEB3', '#FAEBD7', '#FFEFD5',
+            // 柔和冷色系
+            '#B4D4E8', '#A5C9D4', '#C1D5E6', '#D5E6F2', '#E6F2F5',
+            '#A8D8EA', '#B8E0E8', '#C8E8E8', '#D8E8E8', '#E0F0F0',
+            '#B0C4DE', '#ADD8E6', '#B0E0E6', '#AFEEEE', '#E0FFFF',
+            // 柔和大地色系
+            '#C4B7A6', '#D4C4B0', '#E4D4C0', '#B8A99A', '#A89888',
+            '#D8D0C0', '#E8E0D0', '#C0B0A0', '#B0A090', '#A09888',
+            // 柔和紫粉系
+            '#D8BFD8', '#DDA0DD', '#E6E6FA', '#D0C0E8', '#C0B0D8',
+            '#E8D8E8', '#F0E0F0', '#D4C8D4', '#C8BCC8', '#B8ACB8',
+            // 柔和绿蓝系
+            '#B8D8C8', '#A8C8B8', '#98B8A8', '#C8D8B8', '#D8E8C8',
+            '#A0D0C0', '#90C0B0', '#80B0A0', '#B0C8B8', '#C0D8C8',
+            // 柔和灰蓝系
+            '#A8B8C8', '#98A8B8', '#8898A8', '#B8C8D8', '#C8D8E8',
+            '#C0C8D0', '#B0B8C0', '#A0A8B0', '#9098A0', '#808890',
+            // 柔和米色系
+            '#F5F0E6', '#E6E0D6', '#D6D0C6', '#C6C0B6', '#B6B0A6',
+            '#F0E8D8', '#E0D8C8', '#D0C8B8', '#C0B8A8', '#B0A898',
+            // 柔和玫瑰系
+            '#E8D0D8', '#D8C0C8', '#C8B0B8', '#F0E0E8', '#E0D0E0',
+            '#F8E8F0', '#E8D8E8', '#D8C8D8', '#C8B8C8', '#B8A8B8'
+          ];
           return colors[Math.floor(Math.random() * colors.length)];
         };
 
@@ -2886,6 +2920,33 @@
           .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
       }
 
+      // RGB转HSL
+      function rgbToHsl(r, g, b) {
+        r /= 255; g /= 255; b /= 255;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+
+        if (max === min) {
+          h = s = 0;
+        } else {
+          const d = max - min;
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+          switch (max) {
+            case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+            case g: h = ((b - r) / d + 2) / 6; break;
+            case b: h = ((r - g) / d + 4) / 6; break;
+          }
+        }
+        return { h: h * 360, s: s * 100, l: l * 100 };
+      }
+
+      // 降低颜色饱和度
+      function desaturateColor(r, g, b, targetSaturation = 40) {
+        const hsl = rgbToHsl(r, g, b);
+        const newS = Math.min(hsl.s, targetSaturation); // 限制最大饱和度为40%
+        return hslToHex(Math.round(hsl.h), Math.round(newS), Math.round(hsl.l));
+      }
+
       // 提取图片主体颜色函数 - 选择最鲜亮的颜色，排除黑色和白色
       function extractDominantColors(image) {
         // 创建一个临时画布来分析图片颜色
@@ -2986,14 +3047,15 @@
           };
         }
 
-        // 获取最鲜艳的颜色作为主色调
-        const primaryColor = `#${sortedColors[0].r
-          .toString(16)
-          .padStart(2, "0")}${sortedColors[0].g
-          .toString(16)
-          .padStart(2, "0")}${sortedColors[0].b.toString(16).padStart(2, "0")}`;
+        // 获取最鲜艳的颜色作为主色调，并降低饱和度
+        const primaryColor = desaturateColor(
+          sortedColors[0].r,
+          sortedColors[0].g,
+          sortedColors[0].b,
+          40
+        );
 
-        // 生成次要颜色 - 可以是主色调的互补色或变体
+        // 生成次要颜色 - 可以是主色调的互补色或变体，并降低饱和度
         let secondaryColor;
 
         // 判断主色调的亮度
@@ -3008,17 +3070,13 @@
           const darkerR = Math.max(0, sortedColors[0].r - 60);
           const darkerG = Math.max(0, sortedColors[0].g - 60);
           const darkerB = Math.max(0, sortedColors[0].b - 60);
-          secondaryColor = `#${darkerR.toString(16).padStart(2, "0")}${darkerG
-            .toString(16)
-            .padStart(2, "0")}${darkerB.toString(16).padStart(2, "0")}`;
+          secondaryColor = desaturateColor(darkerR, darkerG, darkerB, 40);
         } else {
           // 如果主色调较暗，生成较亮的次要颜色
           const lighterR = Math.min(255, sortedColors[0].r + 60);
           const lighterG = Math.min(255, sortedColors[0].g + 60);
           const lighterB = Math.min(255, sortedColors[0].b + 60);
-          secondaryColor = `#${lighterR.toString(16).padStart(2, "0")}${lighterG
-            .toString(16)
-            .padStart(2, "0")}${lighterB.toString(16).padStart(2, "0")}`;
+          secondaryColor = desaturateColor(lighterR, lighterG, lighterB, 40);
         }
 
         return {
