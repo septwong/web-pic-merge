@@ -3290,8 +3290,9 @@
 
       // 绘制水印
       function drawWatermark() {
+        const defaultWatermark = currentCardSize === '1080x1440' ? '科技阿研' : '公众号:科技研习室';
         const watermarkText =
-          watermarkTextInput.value.trim() || "公众号:科技研习室";
+          watermarkTextInput.value.trim() || defaultWatermark;
         const watermarkColor = watermarkColorInput.value;
         const watermarkOpacity = parseInt(watermarkOpacityInput.value) / 100;
         const watermarkSize = parseInt(watermarkSizeInput.value);
