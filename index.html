@@ -53,13 +53,26 @@
 
       h1 {
         text-align: center;
-        margin-bottom: 30px;
+        margin-bottom: 0;
         color: #333;
       }
+
+      .app-header {
+        margin-bottom: 30px;
+      }
+
       .title {
         display: flex;
         justify-content: center;
         align-items: center;
+      }
+
+      .app-version {
+        margin-top: 6px;
+        text-align: center;
+        color: #888;
+        font-size: 13px;
+        line-height: 1.4;
       }
 
       /* 两列布局样式 */
@@ -984,13 +997,16 @@
   </head>
   <body>
     <div class="container">
-      <h1 class="title">
-        <img
-          src="logo.svg"
-          alt="网站Logo"
-          style="height: 36px; vertical-align: middle; margin-right: 10px"
-        />卡片生成器
-      </h1>
+      <header class="app-header">
+        <h1 class="title">
+          <img
+            src="logo.svg"
+            alt="网站Logo"
+            style="height: 36px; vertical-align: middle; margin-right: 10px"
+          />卡片生成器
+        </h1>
+        <div class="app-version">版本 v2026.05.28.1</div>
+      </header>
 
       <!-- 主要功能Tabs -->
       <div class="main-tabs">
