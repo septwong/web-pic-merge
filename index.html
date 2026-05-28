@@ -1089,31 +1089,16 @@
                     <option value="to right">水平</option>
                     <option value="to bottom">垂直</option>
                     <option value="to right bottom">对角线</option>
+                    <option value="to left bottom">反向对角线</option>
                     <option value="circle">径向</option>
                   </select>
                 </div>
 
                 <div class="form-group">
-                  <label for="cardPadding">内边距</label>
+                  <label for="cardPadding">内容边距</label>
                   <div class="slider-container">
                     <input type="range" id="cardPadding" min="0" max="50" value="0" />
                     <span class="slider-value" id="cardPaddingValue">0</span>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label for="cardRadius">圆角半径</label>
-                  <div class="slider-container">
-                    <input type="range" id="cardRadius" min="0" max="50" value="0" />
-                    <span class="slider-value" id="cardRadiusValue">0</span>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label for="cardShadow">阴影强度</label>
-                  <div class="slider-container">
-                    <input type="range" id="cardShadow" min="0" max="20" value="5" />
-                    <span class="slider-value" id="cardShadowValue">5</span>
                   </div>
                 </div>
               </div>
@@ -1398,10 +1383,6 @@
       const gradientTypeSelect = document.getElementById("gradientType");
       const cardPaddingInput = document.getElementById("cardPadding");
       const cardPaddingValue = document.getElementById("cardPaddingValue");
-      const cardRadiusInput = document.getElementById("cardRadius");
-      const cardRadiusValue = document.getElementById("cardRadiusValue");
-      const cardShadowInput = document.getElementById("cardShadow");
-      const cardShadowValue = document.getElementById("cardShadowValue");
       // 水印相关元素
       const enableWatermarkInput = document.getElementById("enableWatermark");
       const watermarkTextInput = document.getElementById("watermarkText");
@@ -1904,14 +1885,6 @@
         cardPaddingValue.textContent = cardPaddingInput.value;
       });
 
-      cardRadiusInput.addEventListener("input", function () {
-        cardRadiusValue.textContent = cardRadiusInput.value;
-      });
-
-      cardShadowInput.addEventListener("input", function () {
-        cardShadowValue.textContent = cardShadowInput.value;
-      });
-
       // 水印滑块值显示
       watermarkOpacityInput.addEventListener("input", function () {
         watermarkOpacityValue.textContent = watermarkOpacityInput.value;
@@ -2009,44 +1982,9 @@
 
       // 生成随机渐变
       function generateRandomGradient() {
-        const randomColor = () => {
-          const colors = [
-            // 柔和暖色系
-            '#E8B4B8', '#D4A5A5', '#C9B1B1', '#F5D5D5', '#E6C9C9',
-            '#F2D7D7', '#DEB887', '#D2B48C', '#E6D5B8', '#F5E6D3',
-            '#FFDAB9', '#FFE4C4', '#F5DEB3', '#FAEBD7', '#FFEFD5',
-            // 柔和冷色系
-            '#B4D4E8', '#A5C9D4', '#C1D5E6', '#D5E6F2', '#E6F2F5',
-            '#A8D8EA', '#B8E0E8', '#C8E8E8', '#D8E8E8', '#E0F0F0',
-            '#B0C4DE', '#ADD8E6', '#B0E0E6', '#AFEEEE', '#E0FFFF',
-            // 柔和大地色系
-            '#C4B7A6', '#D4C4B0', '#E4D4C0', '#B8A99A', '#A89888',
-            '#D8D0C0', '#E8E0D0', '#C0B0A0', '#B0A090', '#A09888',
-            // 柔和紫粉系
-            '#D8BFD8', '#DDA0DD', '#E6E6FA', '#D0C0E8', '#C0B0D8',
-            '#E8D8E8', '#F0E0F0', '#D4C8D4', '#C8BCC8', '#B8ACB8',
-            // 柔和绿蓝系
-            '#B8D8C8', '#A8C8B8', '#98B8A8', '#C8D8B8', '#D8E8C8',
-            '#A0D0C0', '#90C0B0', '#80B0A0', '#B0C8B8', '#C0D8C8',
-            // 柔和灰蓝系
-            '#A8B8C8', '#98A8B8', '#8898A8', '#B8C8D8', '#C8D8E8',
-            '#C0C8D0', '#B0B8C0', '#A0A8B0', '#9098A0', '#808890',
-            // 柔和米色系
-            '#F5F0E6', '#E6E0D6', '#D6D0C6', '#C6C0B6', '#B6B0A6',
-            '#F0E8D8', '#E0D8C8', '#D0C8B8', '#C0B8A8', '#B0A898',
-            // 柔和玫瑰系
-            '#E8D0D8', '#D8C0C8', '#C8B0B8', '#F0E0E8', '#E0D0E0',
-            '#F8E8F0', '#E8D8E8', '#D8C8D8', '#C8B8C8', '#B8A8B8'
-          ];
-          return colors[Math.floor(Math.random() * colors.length)];
-        };
-
-        const color1 = randomColor();
-        let color2 = randomColor();
-        // 确保两个颜色不同
-        while (color2 === color1) {
-          color2 = randomColor();
-        }
+        const colors = generateRandomGradientColors();
+        const color1 = colors.primary;
+        const color2 = colors.secondary;
 
         const angle = Math.floor(Math.random() * 360);
 
@@ -2184,11 +2122,8 @@
             // 绘制背景
             drawBackground();
 
-            // 绘制卡片内容
+            // 根据内容边距计算图片、二维码和标题的可用区域
             const padding = parseInt(cardPaddingInput.value);
-            const radius = parseInt(cardRadiusInput.value);
-            const shadow = parseInt(cardShadowInput.value);
-            drawCardArea(padding, radius, shadow);
 
             // 绘制水印
             if (enableWatermarkInput.checked) {
@@ -2464,6 +2399,12 @@
               x1 = canvas.width;
               y1 = canvas.height;
               break;
+            case "to left bottom":
+              x0 = canvas.width;
+              y0 = 0;
+              x1 = 0;
+              y1 = canvas.height;
+              break;
           }
 
           // 确保渐变坐标是有限的数字
@@ -2491,45 +2432,6 @@
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
-
-      // 绘制卡片区域
-      function drawCardArea(padding, radius, shadow) {
-        const x = padding;
-        const y = padding;
-        const width = canvas.width - 2 * padding;
-        const height = canvas.height - 2 * padding;
-
-        // 确保圆角半径不超过卡片尺寸的限制
-        radius = Math.min(radius, Math.min(width / 2, height / 2));
-
-        // 保存当前绘图状态
-        ctx.save();
-
-        // 绘制阴影
-        if (shadow > 0) {
-          ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
-          ctx.shadowBlur = shadow;
-          ctx.shadowOffsetX = shadow / 2;
-          ctx.shadowOffsetY = shadow / 2;
-        }
-
-        // 绘制圆角矩形
-        roundRect(ctx, x, y, width, height, radius, true, false);
-
-        // 不填充白色背景，保留渐变背景
-        // ctx.fillStyle = "white";
-        // ctx.fill();
-
-        // 重置阴影
-        ctx.shadowColor = "transparent";
-        ctx.shadowBlur = 0;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 0;
-
-        // 恢复绘图状态
-        ctx.restore();
-      }
-
 
       // 绘制圆角矩形 - 改进版，使用arcTo方法更精确地绘制圆角
       function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
@@ -2699,196 +2601,33 @@
 
       // 生成随机美观渐变颜色
       function generateRandomGradientColors() {
-        // 预定义的美观色调范围
-        // 预定义的美观色调范围，参考微信蓝、微信绿、暖色调等
+        const randomInRange = ([min, max]) =>
+          Math.floor(Math.random() * (max - min + 1)) + min;
+
         const presetGradients = [
-          // 微信蓝 (接近)
-          {
-            h1: [200, 220],
-            s1: [70, 90],
-            l1: [50, 70],
-            h2: [200, 220],
-            s2: [50, 70],
-            l2: [70, 90],
-          },
-          // 微信绿 (接近)
-          {
-            h1: [140, 160],
-            s1: [70, 90],
-            l1: [40, 60],
-            h2: [140, 160],
-            s2: [50, 70],
-            l2: [60, 80],
-          },
-          // 暖色调 (接近)
-          {
-            h1: [30, 50],
-            s1: [80, 100],
-            l1: [50, 70],
-            h2: [10, 30],
-            s2: [70, 90],
-            l2: [60, 80],
-          },
-          // 柔和蓝紫
-          {
-            h1: [240, 260],
-            s1: [50, 70],
-            l1: [60, 80],
-            h2: [270, 290],
-            s2: [40, 60],
-            l2: [70, 90],
-          },
-          // 清新绿黄
-          {
-            h1: [80, 100],
-            s1: [60, 80],
-            l1: [50, 70],
-            h2: [60, 80],
-            s2: [50, 70],
-            l2: [60, 80],
-          },
-          // 活力橙红
-          {
-            h1: [0, 20],
-            s1: [80, 100],
-            l1: [50, 70],
-            h2: [330, 350],
-            s2: [70, 90],
-            l2: [60, 80],
-          },
-          // 浪漫紫粉
-          {
-            h1: [280, 310],
-            s1: [60, 80],
-            l1: [60, 80],
-            h2: [320, 350],
-            s2: [70, 90],
-            l2: [70, 90],
-          },
-          // 深海蓝青
-          {
-            h1: [190, 210],
-            s1: [70, 90],
-            l1: [40, 60],
-            h2: [170, 190],
-            s2: [60, 80],
-            l2: [50, 70],
-          },
-          // 金秋黄棕
-          {
-            h1: [35, 55],
-            s1: [70, 90],
-            l1: [50, 70],
-            h2: [25, 45],
-            s2: [60, 80],
-            l2: [40, 60],
-          },
-          // 薄荷绿青
-          {
-            h1: [150, 170],
-            s1: [50, 70],
-            l1: [60, 80],
-            h2: [180, 200],
-            s2: [60, 80],
-            l2: [70, 90],
-          },
-          // 星空紫蓝
-          {
-            h1: [230, 250],
-            s1: [70, 90],
-            l1: [40, 60],
-            h2: [260, 280],
-            s2: [50, 70],
-            l2: [50, 70],
-          },
-          // 珊瑚粉橙
-          {
-            h1: [350, 10],
-            s1: [80, 100],
-            l1: [60, 80],
-            h2: [20, 40],
-            s2: [80, 100],
-            l2: [60, 80],
-          },
-          // 森林绿
-          {
-            h1: [100, 130],
-            s1: [50, 70],
-            l1: [30, 50],
-            h2: [140, 160],
-            s2: [50, 70],
-            l2: [40, 60],
-          },
-          // 冰川蓝
-          {
-            h1: [195, 215],
-            s1: [80, 100],
-            l1: [70, 90],
-            h2: [200, 220],
-            s2: [60, 80],
-            l2: [80, 95],
-          },
-          // 日落橙紫
-          {
-            h1: [25, 45],
-            s1: [80, 100],
-            l1: [55, 75],
-            h2: [270, 290],
-            s2: [40, 60],
-            l2: [50, 70],
-          },
-          // 糖果粉紫
-          {
-            h1: [300, 320],
-            s1: [70, 90],
-            l1: [70, 90],
-            h2: [330, 350],
-            s2: [80, 100],
-            l2: [75, 95],
-          },
-          // 湖水蓝绿
-          {
-            h1: [165, 185],
-            s1: [60, 80],
-            l1: [55, 75],
-            h2: [175, 195],
-            s2: [70, 90],
-            l2: [65, 85],
-          },
+          // 以浅色背景为目标，避免大面积深色压住主体图片。
+          { h1: [198, 214], s1: [48, 68], l1: [76, 88], h2: [216, 232], s2: [42, 62], l2: [84, 94] },
+          { h1: [145, 164], s1: [42, 62], l1: [76, 88], h2: [172, 188], s2: [38, 58], l2: [84, 94] },
+          { h1: [28, 46], s1: [58, 78], l1: [78, 90], h2: [8, 24], s2: [52, 72], l2: [84, 94] },
+          { h1: [255, 276], s1: [36, 56], l1: [78, 90], h2: [292, 318], s2: [34, 54], l2: [84, 94] },
+          { h1: [80, 100], s1: [42, 62], l1: [78, 90], h2: [54, 72], s2: [40, 60], l2: [84, 94] },
+          { h1: [350, 359], s1: [54, 74], l1: [80, 91], h2: [18, 36], s2: [54, 74], l2: [84, 94] },
+          { h1: [302, 326], s1: [48, 68], l1: [80, 91], h2: [332, 348], s2: [50, 70], l2: [84, 94] },
+          { h1: [168, 188], s1: [46, 66], l1: [76, 88], h2: [190, 208], s2: [48, 68], l2: [84, 94] },
+          { h1: [38, 52], s1: [48, 68], l1: [78, 90], h2: [46, 62], s2: [36, 56], l2: [86, 95] },
+          { h1: [222, 244], s1: [38, 58], l1: [78, 90], h2: [178, 196], s2: [36, 56], l2: [84, 94] },
         ];
 
-        // 随机选择一个预设渐变
         const selectedPreset =
           presetGradients[Math.floor(Math.random() * presetGradients.length)];
 
-        // 在选定的范围内生成随机色调、饱和度和亮度
-        const hue1 =
-          Math.floor(
-            Math.random() * (selectedPreset.h1[1] - selectedPreset.h1[0])
-          ) + selectedPreset.h1[0];
-        const saturation1 =
-          Math.floor(
-            Math.random() * (selectedPreset.s1[1] - selectedPreset.s1[0])
-          ) + selectedPreset.s1[0];
-        const lightness1 =
-          Math.floor(
-            Math.random() * (selectedPreset.l1[1] - selectedPreset.l1[0])
-          ) + selectedPreset.l1[0];
+        const hue1 = randomInRange(selectedPreset.h1);
+        const saturation1 = randomInRange(selectedPreset.s1);
+        const lightness1 = randomInRange(selectedPreset.l1);
+        const hue2 = randomInRange(selectedPreset.h2);
+        const saturation2 = randomInRange(selectedPreset.s2);
+        const lightness2 = randomInRange(selectedPreset.l2);
 
-        const hue2 =
-          Math.floor(
-            Math.random() * (selectedPreset.h2[1] - selectedPreset.h2[0])
-          ) + selectedPreset.h2[0];
-        const saturation2 =
-          Math.floor(
-            Math.random() * (selectedPreset.s2[1] - selectedPreset.s2[0])
-          ) + selectedPreset.s2[0];
-        const lightness2 =
-          Math.floor(
-            Math.random() * (selectedPreset.l2[1] - selectedPreset.l2[0])
-          ) + selectedPreset.l2[0];
-
-        // 将HSL转换为RGB，然后转换为十六进制颜色代码
         const color1 = hslToHex(hue1, saturation1, lightness1);
         const color2 = hslToHex(hue2, saturation2, lightness2);
 
@@ -2945,6 +2684,17 @@
         return `#${r.toString(16).padStart(2, "0")}${g
           .toString(16)
           .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+      }
+
+      function getRandomGradientDirection() {
+        const directions = [
+          "to right",
+          "to bottom",
+          "to right bottom",
+          "to left bottom",
+          "circle",
+        ];
+        return directions[Math.floor(Math.random() * directions.length)];
       }
 
       // RGB转HSL
@@ -3121,23 +2871,7 @@
         bgColor2Input.value = randomColors.secondary;
         bgColor2Value.textContent = randomColors.secondary;
 
-        const directions = [
-          "to right",
-          "to bottom",
-          "to right bottom",
-          "to left bottom",
-        ];
-        const randomDirection =
-          directions[Math.floor(Math.random() * directions.length)];
-        gradientTypeSelect.value = randomDirection;
-
-        const radius = Math.floor(Math.random() * 16); // 0-15的圆角
-        cardRadiusInput.value = radius.toString();
-        cardRadiusValue.textContent = radius.toString();
-
-        const shadow = 3 + Math.floor(Math.random() * 8); // 3-10的阴影
-        cardShadowInput.value = shadow.toString();
-        cardShadowValue.textContent = shadow.toString();
+        gradientTypeSelect.value = getRandomGradientDirection();
 
         showMessage("已生成随机美观渐变背景", "success");
       });
@@ -3156,24 +2890,7 @@
             bgColor2Value.textContent = randomColors.secondary;
 
             // 随机选择渐变方向
-            const directions = [
-              "to right",
-              "to bottom",
-              "to right bottom",
-              "to left bottom",
-            ];
-            const randomDirection =
-              directions[Math.floor(Math.random() * directions.length)];
-            gradientTypeSelect.value = randomDirection;
-
-            // 随机设置圆角和阴影
-            const radius = Math.floor(Math.random() * 16); // 0-15的圆角
-            cardRadiusInput.value = radius.toString();
-            cardRadiusValue.textContent = radius.toString();
-
-            const shadow = 3 + Math.floor(Math.random() * 8); // 3-10的阴影
-            cardShadowInput.value = shadow.toString();
-            cardShadowValue.textContent = shadow.toString();
+            gradientTypeSelect.value = getRandomGradientDirection();
 
             showMessage("已生成随机美观渐变背景", "success");
             break;
@@ -3230,10 +2947,6 @@
               bgColor2Input.value = "#9EBEFA";
               bgColor2Value.textContent = "#9EBEFA";
               gradientTypeSelect.value = "to right";
-              cardRadiusInput.value = "0";
-              cardRadiusValue.textContent = "0";
-              cardShadowInput.value = "5";
-              cardShadowValue.textContent = "5";
             }
             break;
           case "wechat-blue":
@@ -3243,10 +2956,6 @@
             bgColor2Input.value = "#87CEFA";
             bgColor2Value.textContent = "#87CEFA";
             gradientTypeSelect.value = "to right bottom";
-            cardRadiusInput.value = "0";
-            cardRadiusValue.textContent = "0";
-            cardShadowInput.value = "8";
-            cardShadowValue.textContent = "8";
             break;
           case "wechat-green":
             // 微信绿色调
@@ -3255,10 +2964,6 @@
             bgColor2Input.value = "#A0E6C8";
             bgColor2Value.textContent = "#A0E6C8";
             gradientTypeSelect.value = "to bottom";
-            cardRadiusInput.value = "0";
-            cardRadiusValue.textContent = "0";
-            cardShadowInput.value = "6";
-            cardShadowValue.textContent = "6";
             break;
           case "elegant":
             // 简约风格
@@ -3267,10 +2972,6 @@
             bgColor2Input.value = "#E0E0E0";
             bgColor2Value.textContent = "#E0E0E0";
             gradientTypeSelect.value = "to right";
-            cardRadiusInput.value = "0";
-            cardRadiusValue.textContent = "0";
-            cardShadowInput.value = "3";
-            cardShadowValue.textContent = "3";
             break;
           case "warm":
             // 暖色调
@@ -3279,10 +2980,6 @@
             bgColor2Input.value = "#FFA07A";
             bgColor2Value.textContent = "#FFA07A";
             gradientTypeSelect.value = "to right bottom";
-            cardRadiusInput.value = "0";
-            cardRadiusValue.textContent = "0";
-            cardShadowInput.value = "10";
-            cardShadowValue.textContent = "10";
             break;
           case "cool":
             // 冷色调
@@ -3291,10 +2988,6 @@
             bgColor2Input.value = "#9370DB";
             bgColor2Value.textContent = "#9370DB";
             gradientTypeSelect.value = "to bottom";
-            cardRadiusInput.value = "0";
-            cardRadiusValue.textContent = "0";
-            cardShadowInput.value = "7";
-            cardShadowValue.textContent = "7";
             break;
           case "custom":
             // 自定义样式，不做任何改变
@@ -3307,10 +3000,6 @@
             bgColor2Input.value = "#9EBEFA";
             bgColor2Value.textContent = "#9EBEFA";
             gradientTypeSelect.value = "to right";
-            cardRadiusInput.value = "0";
-            cardRadiusValue.textContent = "0";
-            cardShadowInput.value = "5";
-            cardShadowValue.textContent = "5";
             break;
         }
       });
@@ -3435,16 +3124,7 @@
         bgColor1Value.textContent = randomColors.primary;
         bgColor2Input.value = randomColors.secondary;
         bgColor2Value.textContent = randomColors.secondary;
-        const directions = [
-          "to right",
-          "to bottom",
-          "to right bottom",
-          "to left bottom",
-        ];
-        gradientTypeSelect.value =
-          directions[Math.floor(Math.random() * directions.length)];
-        cardRadiusInput.value = Math.floor(Math.random() * 16).toString();
-        cardShadowInput.value = (3 + Math.floor(Math.random() * 8)).toString();
+        gradientTypeSelect.value = getRandomGradientDirection();
 
         // 重置水印设置
         enableWatermarkInput.checked = true;
