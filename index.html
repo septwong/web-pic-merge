@@ -1465,8 +1465,52 @@
         borderImg.onerror = () => console.error("iPhone 边框图片加载失败");
       }
 
+      const DEFAULT_CARD_SIZE = '900x1200';
+      const CARD_SIZE_WATERMARKS = {
+        '900x1200': '公众号:科技研习室',
+        '1080x1440': '科技阿研',
+      };
+
       // 当前选中的卡片尺寸
-      let currentCardSize = localStorage.getItem('selectedCardSize') || '900x1200';
+      let currentCardSize = localStorage.getItem('selectedCardSize') || DEFAULT_CARD_SIZE;
+
+      function findSizeButton(size) {
+        return Array.from(document.querySelectorAll(".size-tab-btn")).find(
+          (btn) => btn.dataset.size === size
+        );
+      }
+
+      function getDefaultWatermark(size = currentCardSize) {
+        return CARD_SIZE_WATERMARKS[size] || CARD_SIZE_WATERMARKS[DEFAULT_CARD_SIZE];
+      }
+
+      function syncDefaultWatermark(size = currentCardSize) {
+        const currentText = watermarkTextInput.value.trim();
+        const defaultWatermarks = Object.values(CARD_SIZE_WATERMARKS);
+
+        if (currentText === "" || defaultWatermarks.includes(currentText)) {
+          watermarkTextInput.value = getDefaultWatermark(size);
+        }
+      }
+
+      function getActiveCardSize() {
+        const activeSizeBtn = document.querySelector(".size-tab-btn.active");
+        return activeSizeBtn?.dataset.size || currentCardSize || DEFAULT_CARD_SIZE;
+      }
+
+      function setCurrentCardSize(size, updateTab = false) {
+        const sizeBtn = findSizeButton(size) || findSizeButton(DEFAULT_CARD_SIZE);
+        currentCardSize = sizeBtn?.dataset.size || DEFAULT_CARD_SIZE;
+        localStorage.setItem('selectedCardSize', currentCardSize);
+
+        if (updateTab) {
+          document.querySelectorAll(".size-tab-btn").forEach((btn) => {
+            btn.classList.toggle("active", btn.dataset.size === currentCardSize);
+          });
+        }
+
+        syncDefaultWatermark(currentCardSize);
+      }
 
       // 初始化时从本地存储恢复tab选择
       const savedMainTab = localStorage.getItem('selectedMainTab') || 'card';
@@ -1497,19 +1541,7 @@
       document.querySelectorAll(".size-tab-btn").forEach((btn) => {
         btn.classList.remove("active");
       });
-      const savedSizeBtn = document.querySelector(`.size-tab-btn[data-size="${currentCardSize}"]`);
-      if (savedSizeBtn) {
-        savedSizeBtn.classList.add("active");
-      } else {
-        document.querySelector(`.size-tab-btn[data-size="900x1200"]`).classList.add("active");
-      }
-
-      // 初始化时根据尺寸设置水印文字
-      if (currentCardSize === '1080x1440') {
-        watermarkTextInput.value = '科技阿研';
-      } else {
-        watermarkTextInput.value = '公众号:科技研习室';
-      }
+      setCurrentCardSize(currentCardSize, true);
 
       // Main tabs switching functionality
       document.querySelectorAll(".main-tab-btn").forEach((btn) => {
@@ -1540,16 +1572,7 @@
           document.querySelectorAll(".size-tab-btn").forEach((b) => b.classList.remove("active"));
           this.classList.add("active");
 
-          // 保存选择到 localStorage
-          currentCardSize = this.dataset.size;
-          localStorage.setItem('selectedCardSize', currentCardSize);
-
-          // 根据尺寸更新水印文字
-          if (currentCardSize === '1080x1440') {
-            watermarkTextInput.value = '科技阿研';
-          } else {
-            watermarkTextInput.value = '公众号:科技研习室';
-          }
+          setCurrentCardSize(this.dataset.size);
 
           // 如果已有生成的卡片，重新生成
           if (cardPreviewContainer.children.length > 0) {
@@ -2127,6 +2150,10 @@
           showMessage("请至少上传一张主图片", "error");
           return;
         }
+
+        currentCardSize = getActiveCardSize();
+        localStorage.setItem('selectedCardSize', currentCardSize);
+        syncDefaultWatermark(currentCardSize);
 
         loadingDiv.classList.add("show");
         cardPreviewContainer.innerHTML = ""; // 清空预览
@@ -3290,7 +3317,7 @@
 
       // 绘制水印
       function drawWatermark() {
-        const defaultWatermark = currentCardSize === '1080x1440' ? '科技阿研' : '公众号:科技研习室';
+        const defaultWatermark = getDefaultWatermark(currentCardSize);
         const watermarkText =
           watermarkTextInput.value.trim() || defaultWatermark;
         const watermarkColor = watermarkColorInput.value;
@@ -3421,7 +3448,7 @@
 
         // 重置水印设置
         enableWatermarkInput.checked = true;
-        watermarkTextInput.value = "公众号:科技研习室";
+        watermarkTextInput.value = getDefaultWatermark(currentCardSize);
         watermarkColorInput.value = "#000000";
         watermarkColorValue.textContent = "#000000";
         watermarkOpacityInput.value = "30";
